@@ -18,6 +18,8 @@ namespace Eindproject.Domain
         public DateTime BewerktOp { get; set; }
 
         public ICollection<SerieOfFilm> serieFilmInLijsts { get; set; }
+
+        public ICollection<Vriend> Vrienden { get; set; }
     
         
     }

@@ -13,8 +13,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Lijst\" />
-  </ItemGroup>
-
 </Project>
