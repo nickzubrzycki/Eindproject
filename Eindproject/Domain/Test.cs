@@ -7,5 +7,6 @@ namespace Eindproject.Domain
 {
     public class Test
     {
+        public int MyProperty { get; set; }
     }
 }
