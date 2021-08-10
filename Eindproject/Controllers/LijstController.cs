@@ -1,4 +1,5 @@
 ﻿using Eindproject.Data;
+using Eindproject.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -24,13 +25,27 @@ namespace Eindproject.Controllers
         
         public  async Task<IActionResult> Index()
         {
-            var response = await httpClient.GetAsync("3/movie/76341?api_key="+api_key);
+            var response = await httpClient.GetAsync("3/movie/3?api_key="+api_key);
 
             response.EnsureSuccessStatusCode();
 
 
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            Console.WriteLine(response);
+            string responseStream = await response.Content.ReadAsStringAsync();
+
+            MovieViewModel movieViewModel = JsonSerializer.Deserialize<MovieViewModel>(responseStream);
+
+            Console.WriteLine(movieViewModel.original_title);
+
+
+            // Proberen om Daily Exports file in te brengen om deze te gebruiken om Id's uithalen
+            // Dit heb je nodig om de films en series op te halen
+
+
+            // Display the object of a movie on the screen
+            // Extract the values from the Json file by  deserialize 
+            // Map that to a object 
+            // Problem is you don't know what the json file contains from attributes?
+
             return View();
         }
 
