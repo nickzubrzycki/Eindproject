@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Eindproject.Data;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,11 @@ namespace Eindproject.Controllers
 {
     public class LijstController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        public LijstController(ApplicationDbContext applicationDbContext)
+        {
+            _context = applicationDbContext; 
+        }
         public IActionResult Index()
         {
             return View();

@@ -19,7 +19,7 @@ namespace Eindproject.Domain
 
         public ICollection<SerieOfFilm> serieFilmInLijsts { get; set; }
 
-        public ICollection<Vriend> Vrienden { get; set; }
+    
     
         
     }
