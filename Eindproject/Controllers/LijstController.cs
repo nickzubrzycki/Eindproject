@@ -3,19 +3,34 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Eindproject.Controllers
 {
     public class LijstController : Controller
     {
+        public readonly string api_key = "70f88e8eb928860994e741cfd80e1ff0";
+        private readonly HttpClient httpClient;
         private readonly ApplicationDbContext _context;
-        public LijstController(ApplicationDbContext applicationDbContext)
+
+        public LijstController(HttpClient httpClient)
         {
-            _context = applicationDbContext; 
+            this.httpClient = httpClient;
+
         }
-        public IActionResult Index()
+
+        
+        public  async Task<IActionResult> Index()
         {
+            var response = await httpClient.GetAsync("3/movie/76341?api_key="+api_key);
+
+            response.EnsureSuccessStatusCode();
+
+
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            Console.WriteLine(response);
             return View();
         }
 
