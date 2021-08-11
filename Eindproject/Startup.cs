@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Eindproject
@@ -32,6 +33,14 @@ namespace Eindproject
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            Uri themovieDbUri = new Uri("https://api.themoviedb.org/");
+
+            HttpClient httpClient = new HttpClient
+            {
+                BaseAddress = themovieDbUri
+            };
+
+            services.AddSingleton<HttpClient>(httpClient);
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultUI()
