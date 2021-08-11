@@ -1,20 +1,26 @@
 ﻿using Eindproject.Data;
+using Eindproject.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Eindproject.Controllers
 {
     public class LijstController : Controller
     {
+        private readonly string api_key = "70f88e8eb928860994e741cfd80e1ff0";
+        private readonly HttpClient httpClient;
         private readonly ApplicationDbContext _context;
-        public LijstController(ApplicationDbContext applicationDbContext)
+        public LijstController(ApplicationDbContext applicationDbContext, HttpClient httpClient)
         {
+            this.httpClient = httpClient;
             _context = applicationDbContext; 
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var response = await httpClient.GetAsync("3/movie/3?api_key="+api_key);
 
