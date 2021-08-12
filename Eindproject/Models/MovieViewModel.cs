@@ -7,6 +7,7 @@ namespace Eindproject.Models
 {
     public class MovieViewModel
     {
+        public int id { get; set; }
         public string original_title { get; set; }
 
         public Object genres { get; set; }
