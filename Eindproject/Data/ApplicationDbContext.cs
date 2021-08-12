@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Eindproject.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -25,7 +25,7 @@ namespace Eindproject.Data
         public DbSet<SerieOfFilm> SerieOfFilms { get; set; }
 
         public DbSet<Status> Statuses { get; set; }
-
         public DbSet<Vriend> Vriend { get; set; }
+
     }
 }
