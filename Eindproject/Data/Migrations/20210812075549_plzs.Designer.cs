@@ -4,14 +4,16 @@ using Eindproject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Eindproject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210812075549_plzs")]
+    partial class plzs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,6 +42,9 @@ namespace Eindproject.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<int>("LijstId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -79,6 +84,8 @@ namespace Eindproject.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LijstId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -100,15 +107,13 @@ namespace Eindproject.Data.Migrations
                     b.Property<DateTime>("BewerktOp")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("GebruikerId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ToegeVoegdOp")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("LijstId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Lijsts");
                 });
@@ -319,13 +324,15 @@ namespace Eindproject.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Eindproject.Domain.Lijst", b =>
+            modelBuilder.Entity("Eindproject.Domain.ApplicationUser", b =>
                 {
-                    b.HasOne("Eindproject.Domain.ApplicationUser", "User")
+                    b.HasOne("Eindproject.Domain.Lijst", "Lijst")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("LijstId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Lijst");
                 });
 
             modelBuilder.Entity("Eindproject.Domain.SerieOfFilm", b =>

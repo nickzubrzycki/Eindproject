@@ -1,4 +1,5 @@
 using Eindproject.Data;
+using Eindproject.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,18 +32,6 @@ namespace Eindproject
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            // Dit is the Endpoint dat de HTTPclient gaat gebruiken
-            Uri ThemovieDb = new Uri("https://api.themoviedb.org/"); 
-            HttpClient httpClient = new HttpClient()
-            {
-                BaseAddress = ThemovieDb,
-                 
-            };
-            services.AddSingleton<HttpClient>(httpClient);
-            
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

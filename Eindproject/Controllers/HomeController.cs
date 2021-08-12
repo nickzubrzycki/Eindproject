@@ -27,6 +27,18 @@ namespace Eindproject.Controllers
         {
             return View();
         }
+        public IActionResult Profiel([FromRoute] int id)
+        {
+            //var persoon = 0;
+            //var vm = new ProfielViewModel
+            //{
+            //    Voornaam = persoon.Voornaam,
+            //    Achternaam = persoon.Achternaam,
+            //    Email = persoon.
+            //};
+
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
