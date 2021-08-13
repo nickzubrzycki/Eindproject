@@ -9,7 +9,7 @@ namespace Eindproject.Domain
     public class SerieOfFilm
     {
         [ForeignKey("Lijst")]
-        public int LijstId { get; set; }
+        public int MovieId { get; set; }
         //Inbrengen van remote Database => Foreign Key
 
         public double Score { get; set; }

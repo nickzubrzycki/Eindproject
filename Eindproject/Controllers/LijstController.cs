@@ -1,5 +1,6 @@
 ﻿using Eindproject.Data;
 using Eindproject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,13 +17,13 @@ namespace Eindproject.Controllers
         private readonly HttpClient httpClient;
         private readonly ApplicationDbContext _context;
 
-        public LijstController(HttpClient httpClient)
+        public LijstController(HttpClient httpClient, ApplicationDbContext _context)
         {
             this.httpClient = httpClient;
-
+            this._context = _context;
         }
 
-        
+        [Authorize]
         public  async Task<IActionResult> Index()
         {
             var response = await httpClient.GetAsync("3/movie/3?api_key="+api_key);
@@ -34,7 +35,7 @@ namespace Eindproject.Controllers
 
             MovieViewModel movieViewModel = JsonSerializer.Deserialize<MovieViewModel>(responseStream);
 
-            Console.WriteLine(movieViewModel.original_title);
+            Console.WriteLine(movieViewModel.Title);
 
 
             // Proberen om Daily Exports file in te brengen om deze te gebruiken om Id's uithalen
@@ -71,9 +72,22 @@ namespace Eindproject.Controllers
         /// Nakijken gegevens film en serie
         /// </summary>
         /// <returns></returns>
-        public IActionResult ViewFilmSerie()
+        public IActionResult ViewFilmSerie([FromRoute] int id)
         {
-            return View(); 
+            var serieFilm = _context.SerieOfFilms.FirstOrDefault(x => x.MovieId == id);
+
+            var vm = new MovieViewModel
+            {
+                //Title = 
+                //Overview = 
+                //PosterUrl = 
+                Score = serieFilm.Score,
+                AantalAfleveringen = serieFilm.aantalAfleveringen,
+                AantalGekekenAfleveringen = serieFilm.aantalGekekenAfleveringen,
+                Status = serieFilm.Status.Omschrijving
+            };
+            
+            return View(vm); 
         }
 
         public IActionResult Delete()
