@@ -2,9 +2,11 @@
 using Eindproject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nancy.Json;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
@@ -28,27 +30,63 @@ namespace Eindproject.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            //var response = await httpClient.GetAsync("3/movie/3?api_key="+api_key);
+            //var response = await httpClient.GetAsync("3/movie/3?api_key=" + api_key);
 
             //response.EnsureSuccessStatusCode();
 
 
             //string responseStream = await response.Content.ReadAsStringAsync();
 
-            //MovieViewModel movieViewModel = JsonSerializer.Deserialize<MovieViewModel>(responseStream);
+            //MovieViewModel movieViewModel = System.Text.Json.JsonSerializer.Deserialize<MovieViewModel>(responseStream);
 
             //Console.WriteLine(movieViewModel.original_title);
 
-            GetAllMoviesAndSeries();
+            //GetAllMoviesAndSeries();
+
+            TrendingMoviesAndSeries();
 
            
             return View();
         }
 
-        public void TrendingMoviesAndSeries()
+        /// <summary>
+        /// Search for the trending Movies and Series
+        /// </summary>
+        public async void TrendingMoviesAndSeries()
         {
+            List<TrendingMoviesSeriesViewModel>
+                trendingMoviesSeriesViewModels = new List<TrendingMoviesSeriesViewModel>();
+            TrendingMoviesSeriesViewModel moviesSeriesViewModel = new TrendingMoviesSeriesViewModel();
+
+            
+            try
+            {
+                var response = await httpClient.GetStringAsync("3/trending/all/day?api_key=" + api_key);
+                moviesSeriesViewModel =  JsonConvert.DeserializeObject<TrendingMoviesSeriesViewModel>(response);
+                foreach(var mov in moviesSeriesViewModel.results)
+                {
+                    TrendingMoviesSeriesViewModel trendingMoviesSeries = new TrendingMoviesSeriesViewModel();
+                    // Omzetten van object attributen naar MovieViewModel 
+                    // Omzetten naar json file en dan mappen 
+                    var json = JsonConvert.SerializeObject(mov);
+
+                    trendingMoviesSeries = JsonConvert.DeserializeObject<TrendingMoviesSeriesViewModel>(json);
+
+                    Console.WriteLine(trendingMoviesSeries.original_title);
+                    // Voor elke object invoegen in een list van movieobjects
+                    trendingMoviesSeriesViewModels.Add(trendingMoviesSeries);
+                    
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                Console.WriteLine("An Error has occurred");
+            }
+
 
         }
+
 
 
         public void GetAllMoviesAndSeries()
@@ -139,4 +177,6 @@ namespace Eindproject.Controllers
             return View();
         }
     }
+
+   
 }
