@@ -30,18 +30,18 @@ namespace Eindproject.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            //var response = await httpClient.GetAsync("3/movie/3?api_key=" + api_key);
+            var response = await httpClient.GetAsync("3/movie/3?api_key=" + api_key);
 
-            //response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
 
-            //string responseStream = await response.Content.ReadAsStringAsync();
+            string responseStream = await response.Content.ReadAsStringAsync();
 
-            //MovieViewModel movieViewModel = System.Text.Json.JsonSerializer.Deserialize<MovieViewModel>(responseStream);
+            MovieViewModel movieViewModel = System.Text.Json.JsonSerializer.Deserialize<MovieViewModel>(responseStream);
 
-            //Console.WriteLine(movieViewModel.original_title);
+            Console.WriteLine(movieViewModel.original_title);
 
-            //GetAllMoviesAndSeries();
+            GetAllMoviesAndSeries();
 
             TrendingMoviesAndSeries();
 
@@ -86,6 +86,35 @@ namespace Eindproject.Controllers
 
 
         }
+
+        /*
+         * Doel:  De user moet de mogelijkheid hebben om films die hij in de toekomst wil zien
+         */
+
+       
+
+
+        /*
+         * Mini Agenda voor bijhouden van activiteiten voor de users 
+         * 
+         * Users hebben een optie om via een agenda een gepickte datum te kiezen om een film of 
+         * Serie te kunnen zien 
+         * 
+         * Kiezen van naam van Serie of Film 
+         * Datum kiezen van Film of Serie
+         * 
+         * Automatisch een melding krijgen van zodra de startdatum bereikt?
+         * 
+         * Een film heeft een bepaalde status: Gekeken, aan het kijken of gepland 
+         * Kijken via meldingen naar if de today date == Planned_date 
+         * Weten hoelang hij de serie gekeken heeft  => timespan 
+         * Begonen met kijken - Einde van kijken datum 
+         * 
+         * 
+         * Hoe de melding krijgen?
+         * Checken wanneer today date  == planned_date
+         * 
+         */
 
 
 

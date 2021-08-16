@@ -27,5 +27,7 @@ namespace Eindproject.Data
         public DbSet<Status> Statuses { get; set; }
 
         public DbSet<Vriend> Vriend { get; set; }
+
+        public DbSet<Notification> Notifications { get; set; }
     }
 }
