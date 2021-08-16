@@ -20,7 +20,7 @@ namespace Eindproject.Controllers
     [AllowAnonymous]
     public class LijstController : Controller
     {
-        private readonly string api_key = "70f88e8eb928860994e741cfd80e1ff0";
+        public readonly string api_key = "70f88e8eb928860994e741cfd80e1ff0";
         private readonly HttpClient httpClient;
         private readonly ApplicationDbContext _context;
         public LijstController(ApplicationDbContext applicationDbContext, HttpClient httpClient)

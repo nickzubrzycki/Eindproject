@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Eindproject.Domain;
-using Microsoft.AspNetCore.Identity;
 
 namespace Eindproject.Data
 {

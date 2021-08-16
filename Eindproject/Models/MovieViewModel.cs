@@ -18,6 +18,7 @@ namespace Eindproject.Models
         public double popularity { get; set; }
 
         public int runtime { get; set; }
+        public string poster_path { get; set; }
 
     }
 }
