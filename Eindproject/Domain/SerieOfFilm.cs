@@ -11,7 +11,7 @@ namespace Eindproject.Domain
         [ForeignKey("Lijst")]
         public int LijstId { get; set; }
         //Inbrengen van remote Database => Foreign Key
-        public int SerieOfFilmId { get; set; }
+        public string SerieOfFilmId { get; set; }
 
         public double Score { get; set; }
 

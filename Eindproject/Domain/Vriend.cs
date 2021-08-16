@@ -17,6 +17,6 @@ namespace Eindproject.Domain
         [ForeignKey("BevriendId")]
         public virtual ApplicationUser Bevriend { get; set; }
 
-
+        public bool Accepted { get; set; }
     }
 }

@@ -1,0 +1,43 @@
+﻿@model IEnumerable<UserListViewModel>
+@using (Html.BeginForm("UserSearch", "Home", FormMethod.Get))
+{
+    <p>
+         UserName  : @Html.TextBox("searchString")
+        <input type="submit" value="Find User" />
+    </p>
+}
+@if (Model == null)
+{
+    <p>Er zijn geen personen beschikbaar</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">UserName</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @*Hier ook nog checken of add friend een optie moet zijn aan de hand van de accepted*@
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td scope="row">
+                        <a asp-controller="Home" asp-action="Profiel" asp-route-id="@item.Id">
+                            <input type="button" value="@item.UserName" />
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-controller="Home" asp-action="AddFriend" asp-route-bevriendid="@item.Id">
+                            <input type="button" class="btn btn-primary" value="Add Friend" />
+                        </a>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+
+}
