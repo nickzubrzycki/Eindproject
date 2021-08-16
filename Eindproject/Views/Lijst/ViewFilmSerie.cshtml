@@ -1,18 +1,20 @@
-﻿<div class="container">
+﻿@model MovieViewModel 
+
+<div class="container">
     <div class="row" style="min-height:min-content">
         <div class="col-sm-8">
             <section class="mb-3 card">
                 <div class="card-header">
-                    <h4><strong>Title</strong></h4>
+                    <h4><strong>@Model.Title</strong></h4>
                 </div>
                 <div class="card-body" style="height:315px">
-                    <p>Overview</p>
+                    <p>@Model.Overview</p>                                      
                 </div>
             </section>
         </div>
         <div class="col-sm-4">
             <section class="mb-3 d-none d-sm-block">
-                <img src="PathUrl" />
+                <img src="@Model.PosterUrl" height="400"/>
             </section>
         </div>
     </div>
@@ -26,7 +28,7 @@
                     <h5><strong>Kijkgeschiedenis</strong></h5>
                 </div>
                 <div class="card-body text-right">
-                    <p>AantalGekekenAfleveringen/AantalAfleveringen afleveringen</p>
+                    <p>@Model.AantalGekekenAfleveringen/@Model.AantalAfleveringen afleveringen</p>
                 </div>
             </section>
         </div>
@@ -36,7 +38,7 @@
                     <h5><strong>Status</strong></h5>
                 </div>
                 <div class="card-body text-right">
-                    <p>Status</p>
+                    <p>@Model.Status</p>
                 </div>
             </section>
         </div>
@@ -46,7 +48,7 @@
                     <h5><strong>Score</strong></h5>
                 </div>
                 <div class="card-body text-right">
-                    <p>Score</p>
+                    <p>@Model.Score</p>
                 </div>
             </section>
         </div>

@@ -21,9 +21,8 @@ namespace Eindproject.Controllers
         {
             this.httpClient = httpClient;
             this._context = _context;
-        }
-
-        [Authorize]
+        }       
+        
         public  async Task<IActionResult> Index()
         {
             var response = await httpClient.GetAsync("3/movie/3?api_key="+api_key);
@@ -72,15 +71,15 @@ namespace Eindproject.Controllers
         /// Nakijken gegevens film en serie
         /// </summary>
         /// <returns></returns>
-        public IActionResult ViewFilmSerie([FromRoute] int id)
+        public IActionResult ViewFilmSerie([FromRoute] string id)
         {
-            var serieFilm = _context.SerieOfFilms.FirstOrDefault(x => x.MovieId == id);
+            var serieFilm = _context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmId == id);               
 
             var vm = new MovieViewModel
             {
-                //Title = 
-                //Overview = 
-                //PosterUrl = 
+                Title = "",
+                Overview = "",
+                PosterUrl = "",
                 Score = serieFilm.Score,
                 AantalAfleveringen = serieFilm.aantalAfleveringen,
                 AantalGekekenAfleveringen = serieFilm.aantalGekekenAfleveringen,
