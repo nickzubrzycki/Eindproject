@@ -89,9 +89,26 @@ namespace Eindproject.Controllers
             return View(vm); 
         }
 
-        public IActionResult Delete()
+        public IActionResult Delete([FromRoute] string id)
         {
-            return View();
+            var serieFilm = _context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmId == id);
+
+            var vm = new MovieDeleteModel
+            {
+                Id = serieFilm.SerieOfFilmId,
+                Title = ""
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmDelete([FromRoute] string id)
+        {
+            _context.SerieOfFilms.Remove(_context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmId == id));
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,5 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model MovieDeleteModel
+
+<p>Bent u zeker dat u <strong>@Model.Title</strong>wilt verwijderen?</p>
+
+<form asp-controller="Lijst" asp-action="ConfirmDelete" asp-route-id="@Model.Id">
+    <input type="submit" class=" btn btn-danger" value="Verwijderen"/>
+</form>
+
+<a asp-controller="Lijst" asp-action="Index">Terug naar overzicht</a>
+
