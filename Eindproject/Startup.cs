@@ -32,6 +32,20 @@ namespace Eindproject
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
+            Uri themovieDbUri = new Uri("https://api.themoviedb.org/");
+
+            HttpClient httpClient = new HttpClient
+            {
+                BaseAddress = themovieDbUri
+            };
+
+            services.AddSingleton<HttpClient>(httpClient);
+
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
