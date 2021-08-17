@@ -1,4 +1,5 @@
 using Eindproject.Data;
+using Eindproject.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
