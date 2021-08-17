@@ -16,27 +16,48 @@ namespace Eindproject.Data
         }
         public void AddNotification(Notification notification)
         {
-            throw new NotImplementedException();
+            applicationDbContext.Notifications.Add(notification); 
+            applicationDbContext.SaveChanges();
         }
 
         public void DeleteNotification(int Id)
         {
-            throw new NotImplementedException();
+            var notification = applicationDbContext.Notifications.SingleOrDefault(m => m.Id == Id);
+
+            if (notification != null)
+            {
+                applicationDbContext.Notifications.Remove(notification);
+                applicationDbContext.SaveChanges();
+            }
         }
 
         public Notification GetNotification(int Id)
         {
-            throw new NotImplementedException();
+            return applicationDbContext.Notifications.SingleOrDefault(n => n.Id == Id);
         }
 
         public IEnumerable<Notification> GetNotifications()
         {
-            throw new NotImplementedException();
+            return applicationDbContext.Notifications;
         }
 
         public void UpdateNotification(int Id, Notification notification)
         {
-            throw new NotImplementedException();
+            var notificationDb = applicationDbContext.Notifications.SingleOrDefault(n => n.Id == Id);
+
+            if(notificationDb != null)
+            {
+                notificationDb.FromUserId = notification.FromUserId;
+                notificationDb.ToUserId = notification.ToUserId;
+                notificationDb.HeaderMessage = notification.HeaderMessage;
+                notificationDb.BodyMessage = notification.BodyMessage;
+                notificationDb.Url = notificationDb.Url;
+                notificationDb.IsRead = notification.IsRead;
+                notificationDb.Url = notification.Url;
+                notificationDb.CreatedDate = notification.CreatedDate;
+                applicationDbContext.SaveChanges();
+
+            }
         }
     }
 

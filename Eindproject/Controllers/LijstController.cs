@@ -2,7 +2,6 @@
 using Eindproject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nancy.Json;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
