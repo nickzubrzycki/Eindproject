@@ -1,54 +1,47 @@
-﻿@model MovieViewModel 
+﻿@model SerieViewModel
+@using Eindproject.Domain
+@{var serieOfFilm = new SerieOfFilm(); }
 
 <div class="container">
     <div class="row" style="min-height:min-content">
         <div class="col-sm-8">
             <section class="mb-3 card">
                 <div class="card-header">
-                    <h4><strong>@Model.Title</strong></h4>
+                    <h4><strong>@Model.original_name</strong></h4>
                 </div>
                 <div class="card-body" style="height:315px">
-                    <p>@Model.Overview</p>                                      
+                    <p style="font-style:italic">@Model.created_by</p>
+                    <p>@Model.overview</p>
                 </div>
             </section>
         </div>
         <div class="col-sm-4">
             <section class="mb-3 d-none d-sm-block">
-                <img src="@Model.PosterUrl" height="400"/>
+                <img src="@Model.poster_path" height="400" />
             </section>
         </div>
     </div>
 </div>
 
 <div class="container">
-    <div class="row">
-        <div class="col-sm-4">
+    <div class="row">        
+        <div class="col-sm-8">
             <section class="mb-3 card">
                 <div class="card-header">
-                    <h5><strong>Kijkgeschiedenis</strong></h5>
+                    <h5><strong>Inhoud</strong></h5>
                 </div>
                 <div class="card-body text-right">
-                    <p>@Model.AantalGekekenAfleveringen/@Model.AantalAfleveringen afleveringen</p>
+                    <p>@Model.number_of_seasons seizoenen (@Model.number_of_episodes afleveringen)</p>
                 </div>
             </section>
         </div>
         <div class="col-sm-4">
-            <section class="mb-3 card">
-                <div class="card-header">
-                    <h5><strong>Status</strong></h5>
-                </div>
-                <div class="card-body text-right">
-                    <p>@Model.Status</p>
-                </div>
-            </section>
-        </div>
-        <div class="col-sm-3">
             <section class="mb-3 card">
                 <div class="card-header">
                     <h5><strong>Score</strong></h5>
                 </div>
                 <div class="card-body text-right">
-                    <p>@Model.Score</p>
+                    <p>@Model.popularity</p>
                 </div>
             </section>
         </div>

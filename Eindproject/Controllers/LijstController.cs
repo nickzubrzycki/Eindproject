@@ -195,45 +195,19 @@ namespace Eindproject.Controllers
         /// Nakijken gegevens film en serie
         /// </summary>
         /// <returns></returns>
-        public IActionResult ViewFilmSerie([FromRoute] string id)
-        {
-            var serieFilm = _context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmId == id);               
-
-            var vm = new MovieViewModel
-            {
-                Title = "",
-                Overview = "",
-                PosterUrl = "",
-                Score = serieFilm.Score,
-                AantalAfleveringen = serieFilm.aantalAfleveringen,
-                AantalGekekenAfleveringen = serieFilm.aantalGekekenAfleveringen,
-                Status = serieFilm.Status.Omschrijving
-            };
+        public IActionResult ViewFilmSerie()
+        {           
             
-            return View(vm); 
+            return View(); 
         }
 
-        public IActionResult Delete([FromRoute] string id)
-        {
-            var serieFilm = _context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmId == id);
+        public IActionResult Delete()
+        {            
 
-            var vm = new MovieDeleteModel
-            {
-                Id = serieFilm.SerieOfFilmId,
-                Title = ""
-            };
-
-            return View(vm);
+            return View();
         }
 
-        [HttpPost]
-        public IActionResult ConfirmDelete([FromRoute] string id)
-        {
-            _context.SerieOfFilms.Remove(_context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmId == id));
-            _context.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
-        }
+        
     }
 
    
