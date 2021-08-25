@@ -12,6 +12,7 @@ namespace Eindproject.Domain
         public int LijstId { get; set; }
         //Inbrengen van remote Database => Foreign Key
         public string SerieOfFilmId { get; set; }
+
         public double Score { get; set; }
 
         public int aantalAfleveringen { get; set; }
@@ -22,8 +23,6 @@ namespace Eindproject.Domain
 
         [ForeignKey("Status")]
         public int StatusId { get; set; }
-
-
         public Status Status { get; set; }
 
         public Lijst Lijst { get; set; }

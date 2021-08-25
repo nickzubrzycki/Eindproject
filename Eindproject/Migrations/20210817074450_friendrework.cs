@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Eindproject.Data.Migrations
+namespace Eindproject.Migrations
 {
-    public partial class work : Migration
+    public partial class friendrework : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

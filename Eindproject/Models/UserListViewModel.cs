@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace Eindproject.Models
 {
-    public class ProfielViewModel
+    public class UserListViewModel
     {
         public string Id { get; set; }
-        public string Voornaam { get; set; }
-        public string Achternaam { get; set; }
-        public string Email { get; set; }
-
+        public string UserName { get; set; }
     }
 }

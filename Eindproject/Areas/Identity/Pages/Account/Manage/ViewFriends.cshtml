@@ -1,0 +1,80 @@
+﻿@page
+@using Eindproject.Data;
+@using Eindproject.Domain;
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<ApplicationUser> userManager
+@inject ApplicationDbContext _data;
+@{
+
+    string id = userManager.GetUserId(User);
+
+    var friends = _data.Vriend.Where(u => (u.Bevriend.Id == id || u.UserId == id) && u.Accepted == true);
+
+
+}
+<style>
+   .btn-danger:hover{
+       background-color:tomato;
+       border-color:tomato;
+   }
+    .extra {
+        text-align: left;
+    }
+
+    .extra:hover {
+        background-color: lightskyblue;
+        border-color: lightskyblue;
+    }
+</style>
+
+    <a asp-controller="Home" asp-action="UserSearch">
+        <input type="button" class="btn btn-primary extra" value="Add more friends" />
+    </a>
+
+    <hr/>
+
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">UserName</th>
+                <th scope="col">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in friends)
+            {
+
+                <tr>
+                    @{
+                        var temp = _data.Users.FirstOrDefault(u => u.Id == item.UserId);
+                    }
+                    <td scope="row">
+                        <p>@temp.UserName</p>
+                    </td>
+
+                    <td>
+                        @if (temp.Id != id)
+                        {
+                            <a asp-controller="Home" asp-action="Profiel" asp-route-id="@item.UserId">
+                                <input type="button" class="btn btn-primary" value="View profile" />
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Home" asp-action="Profiel" asp-route-id="@item.BevriendId">
+                                <input type="button" class="btn btn-primary" value="View profile" />
+                            </a>
+                        }
+
+                        <a asp-controller="Home" asp-action="RemoveFriend" asp-route-vriendId="@item.VriendId">
+                            <input type="button" class="btn btn-danger" value="Remove friend" />
+                        </a>
+                    </td>
+
+                </tr>
+
+            }
+        </tbody>
+    </table>

@@ -38,7 +38,7 @@ namespace Eindproject.Controllers
 
             MovieViewModel movieViewModel = System.Text.Json.JsonSerializer.Deserialize<MovieViewModel>(responseStream);
 
-            Console.WriteLine(movieViewModel.original_title);
+            //Console.WriteLine(movieViewModel.original_title);
 
             GetAllMoviesAndSeries();
 

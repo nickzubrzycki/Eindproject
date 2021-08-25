@@ -1,0 +1,96 @@
+﻿@model IEnumerable<UserListViewModel>
+@using Eindproject.Domain;
+@using Eindproject.Data;
+@using Microsoft.AspNetCore.Identity
+
+
+@inject UserManager<ApplicationUser> userManager
+@inject ApplicationDbContext _data;
+@{
+
+    var id = userManager.GetUserId(User);
+    var friends = _data.Vriend.Where(u => u.User.Id == id || u.Bevriend.Id == id);
+
+
+}
+<style>
+    .btn-danger:hover {
+        background-color: tomato;
+        border-color: tomato;
+    }
+
+    .extra {
+        text-align: left;
+    }
+
+        .extra:hover {
+            background-color: lightskyblue;
+            border-color: lightskyblue;
+        }
+</style>
+
+@using (Html.BeginForm("UserSearch", "Home", FormMethod.Get))
+{
+    <p>
+        UserName  : @Html.TextBox("searchString")
+        <input type="submit" value="Find User" />
+    </p>
+}
+@if (Model == null)
+{
+    <p>Enter search criteria</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">UserName</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td scope="row">
+                    <a asp-controller="Home" asp-action="Profiel" asp-route-id="@item.Id">
+                        <input type="button" value="@item.UserName" />
+                    </a>
+                </td>
+                @{
+                    var check = friends.FirstOrDefault(u => u.Bevriend.Id == item.Id || u.User.Id == item.Id);
+                }
+
+                @if (check == null)
+                {
+                    <td>
+                        <a asp-controller="Home" asp-action="AddFriend" asp-route-bevriendid="@item.Id">
+                            <input type="button" class="btn btn-primary extra" value="Add Friend" />
+                        </a>
+                    </td>
+
+                }
+                else if (check.UserId == id)
+                {
+                    <td>
+                        <input type="button" disabled="disabled" class="btn btn-primary" value="Pending" />
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-controller="Home" asp-action="ComfirmFriend" asp-route-bevriendid="@item.Id">
+                            <input type="button" class="btn btn-primary extra" value="Add Friend" />
+                        </a>
+                    </td>
+                }
+
+
+            </tr>
+
+            }
+        </tbody>
+    </table>
+
+}

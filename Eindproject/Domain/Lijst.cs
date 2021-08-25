@@ -12,6 +12,7 @@ namespace Eindproject.Domain
         [Key]
         public int LijstId { get; set; }
 
+
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
 
