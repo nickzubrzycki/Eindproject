@@ -34,7 +34,7 @@ namespace Eindproject.Controllers
 
             MovieViewModel movieViewModel = JsonSerializer.Deserialize<MovieViewModel>(responseStream);
 
-            Console.WriteLine(movieViewModel.original_title);
+            //Console.WriteLine(movieViewModel.original_title);
 
 
             // Proberen om Daily Exports file in te brengen om deze te gebruiken om Id's uithalen
