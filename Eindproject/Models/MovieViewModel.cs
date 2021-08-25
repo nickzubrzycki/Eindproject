@@ -7,19 +7,18 @@ namespace Eindproject.Models
 {
     public class MovieViewModel
     {
-        public string Title { get; set; }
+        public int id { get; set; }
+        public string original_title { get; set; }
 
-        public string Overview { get; set; }
+        public Object genres { get; set; }
+        public string release_date { get; set;}
 
-        public string PosterURL { get; set; }
+        public string overview { get; set; }
 
-        public double Score { get; set; }
+        public double popularity { get; set; }
 
-        public int AantalAfleveringen { get; set; }
-
-        public int AantalGekekenAfleveringen { get; set; }
-
-        public string Status { get; set; }
+        public int runtime { get; set; }
+        public string poster_path { get; set; }
 
     }
 }

@@ -33,6 +33,19 @@ namespace Eindproject
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
+            Uri themovieDbUri = new Uri("https://api.themoviedb.org/");
+
+            HttpClient httpClient = new HttpClient
+            {
+                BaseAddress = themovieDbUri
+            };
+
+            services.AddSingleton<HttpClient>(httpClient);
+
+            
+            services.AddControllersWithViews();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultUI()
