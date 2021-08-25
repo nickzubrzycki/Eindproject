@@ -1,0 +1,13 @@
+﻿@page
+@model CreateRoleModel
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Input.Name"></label>
+        <input asp-for="Input.Name" class="form-control" />
+        <span asp-validation-for="Input.Name" class="text-danger"></span>
+    </div>
+    <button id="update-profile-button" type="submit" class="btn btn-primary extra">Add Role</button>
+</form>

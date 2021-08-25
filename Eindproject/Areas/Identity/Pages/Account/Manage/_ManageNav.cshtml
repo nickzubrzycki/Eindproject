@@ -1,15 +1,40 @@
-﻿@inject SignInManager<ApplicationUser> SignInManager
+﻿@using Eindproject.Data;
+@using Eindproject.Domain;
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> userManager
+@inject ApplicationDbContext _data
+
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    string id = userManager.GetUserId(User);
+
+    int countFriends = _data.Vriend.Where(f => (f.UserId == id || f.BevriendId == id) && f.Accepted == true).Count();
+    int countFriendRequests = _data.Vriend.Where(f => f.BevriendId == id && f.Accepted == false).Count();
+
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
-    @if (hasExternalLogins)
-    {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+<style>
+    .extra{
+        text-align:left;
     }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
+    .extra:hover {
+        background-color: lightskyblue;
+        border-color: lightskyblue;
+    }
+    .current {
+        background-color: deepskyblue;
+        border-color: deepskyblue;
+    }
+</style>
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
+    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+
+    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.ViewFriendsNavClass(ViewContext)" id="friends" asp-page="./ViewFriends">Friends <span class="badge badge-light">@countFriends</span></a></li>
+    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.FriendRequestsNavClass(ViewContext)" id="personal-data" asp-page="./FriendRequests">FriendRequests <span class="badge badge-light">@countFriendRequests</span></a></li>
+    @*Komt nog een if voor te checken of gebruiker admin is*@
+    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.FriendRequestsNavClass(ViewContext)" id="personal-data" asp-page="./CreateRole">Create Role </a></li>
+    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.FriendRequestsNavClass(ViewContext)" id="personal-data" asp-page="./ManageRole">Manage Role </a></li>
+
 </ul>

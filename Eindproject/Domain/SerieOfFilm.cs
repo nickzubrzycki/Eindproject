@@ -23,8 +23,6 @@ namespace Eindproject.Domain
 
         [ForeignKey("Status")]
         public int StatusId { get; set; }
-
-
         public Status Status { get; set; }
 
         public Lijst Lijst { get; set; }

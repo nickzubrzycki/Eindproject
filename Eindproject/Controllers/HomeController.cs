@@ -52,6 +52,7 @@ namespace Eindproject.Controllers
         {
             // remove self from search 
             string uid = _userManager.GetUserId(HttpContext.User);
+
             if (String.IsNullOrEmpty(searchString))
             {
                 return View();
@@ -77,9 +78,25 @@ namespace Eindproject.Controllers
 
             _data.Vriend.Add(new Vriend { User = user, Bevriend = vriend, Accepted = false});
             _data.SaveChanges();
+            return RedirectToAction(nameof(UserSearch));
+        }
+        public IActionResult ComfirmFriend(int vriendId)
+        {
+            
+            _data.Vriend.FirstOrDefault(v => v.VriendId == vriendId).Accepted = true;
+            _data.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult RemoveFriend(int vriendId)
+        {
+
+            _data.Vriend.Remove(_data.Vriend.FirstOrDefault(f => f.VriendId == vriendId));
+            _data.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

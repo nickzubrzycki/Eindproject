@@ -11,11 +11,13 @@ namespace Eindproject.Domain
     {
         public int VriendId { get; set; }
 
+        public string UserId { get; set; }
         [ForeignKey("UserId")]
-        public virtual ApplicationUser User { get; set; }
-        
+        public ApplicationUser User { get; set; }
+
+        public string BevriendId { get; set; }
         [ForeignKey("BevriendId")]
-        public virtual ApplicationUser Bevriend { get; set; }
+        public ApplicationUser Bevriend { get; set; }
 
         public bool Accepted { get; set; }
     }
