@@ -9,9 +9,9 @@ namespace Eindproject.Models
     {
         public int Id { get; set; }
 
-        public int FromUserId { get; set; }
+        public string FromUserId { get; set; }
 
-        public int ToUserId { get; set; }
+        public string ToUserId { get; set; }
 
         public string HeaderMessage { get; set; }
 
