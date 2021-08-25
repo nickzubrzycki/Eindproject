@@ -23,7 +23,10 @@ namespace Eindproject.Areas.Identity.Pages.Account.Manage
         public static string PersonalData => "PersonalData";
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
-
+        public static string FriendRequests => "FriendRequests";
+        public static string ViewFriends => "ViewFriends";
+        public static string CreateRole => "CreateRole";
+        public static string ManageRole => "ManageRole";
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
@@ -35,8 +38,12 @@ namespace Eindproject.Areas.Identity.Pages.Account.Manage
         public static string DeletePersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, DeletePersonalData);
 
         public static string ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);
-
         public static string PersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, PersonalData);
+        public static string FriendRequestsNavClass(ViewContext viewContext) => PageNavClass(viewContext, FriendRequests);
+        public static string ViewFriendsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ViewFriends);
+        public static string CreateRoleNavClass(ViewContext viewContext) => PageNavClass(viewContext, CreateRole);
+        public static string ManageRoleNavClass(ViewContext viewContext) => PageNavClass(viewContext, ManageRole);
+
 
         public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
 
@@ -44,7 +51,7 @@ namespace Eindproject.Areas.Identity.Pages.Account.Manage
         {
             var activePage = viewContext.ViewData["ActivePage"] as string
                 ?? System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
-            return string.Equals(activePage, page, StringComparison.OrdinalIgnoreCase) ? "active" : null;
+            return string.Equals(activePage, page, StringComparison.OrdinalIgnoreCase) ? "current" : null;
         }
     }
 }

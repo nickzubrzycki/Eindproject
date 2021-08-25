@@ -4,16 +4,14 @@ using Eindproject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Eindproject.Data.Migrations
+namespace Eindproject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210812085053_plzss")]
-    partial class plzss
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,10 +115,8 @@ namespace Eindproject.Data.Migrations
 
             modelBuilder.Entity("Eindproject.Domain.SerieOfFilm", b =>
                 {
-                    b.Property<int>("SerieOfFilmId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("SerieOfFilmId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("LijstId")
                         .HasColumnType("int");
@@ -170,6 +166,9 @@ namespace Eindproject.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Accepted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("BevriendId")
                         .HasColumnType("nvarchar(450)");

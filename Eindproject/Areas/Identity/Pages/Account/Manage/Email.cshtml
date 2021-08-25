@@ -4,7 +4,21 @@
     ViewData["Title"] = "Manage Email";
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
+<style>
+    .btn-danger:hover {
+        background-color: tomato;
+        border-color: tomato;
+    }
 
+    .extra {
+        text-align: left;
+    }
+
+    .extra:hover {
+        background-color: lightskyblue;
+        border-color: lightskyblue;
+    }
+</style>
 <h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 <div class="row">
@@ -25,7 +39,7 @@
                  else
                 {
                     <input asp-for="Email" class="form-control" disabled />
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link ">Send verification email</button>
                 }
             </div>
             <div class="form-group">

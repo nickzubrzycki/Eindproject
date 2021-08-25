@@ -1,0 +1,32 @@
+﻿@model RoleCreateViewModel
+
+<h1>Create a new role</h1>
+@*
+Dit is de code voor een roll te createn
+
+<form asp-controller="Administration" asp-action="Create" method="Post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input class="form-control" asp-for="Name" />
+        <span class="text-danger" asp-validation-for="Name"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+*@
+
+
+
+<form asp-controller="Administration" asp-action="AddUserRole" method="Post">
+    <div class="form-group">
+        <label asp-for="UserRoleId">UserRole</label>
+        <select class="form-control" asp-items="ViewData.Model.UserRoles" asp-for="UserRoleId"></select>
+        <span class="text-danger" asp-validation-for="UserRoleId"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="UserId">User</label>
+        <select class="form-control" asp-items="ViewData.Model.Users" asp-for="UserId"></select>
+        <span class="text-danger" asp-validation-for="UserId"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
