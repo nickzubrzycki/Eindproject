@@ -1,0 +1,102 @@
+﻿@page
+@using Eindproject.Data;
+@using Eindproject.Domain;
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<ApplicationUser> userManager
+@inject ApplicationDbContext _data;
+@{
+
+    string id = userManager.GetUserId(User);
+
+    var friends = _data.Vriend.Where(u => u.Bevriend.Id == id && u.Accepted == false);
+    var friendsMaybe = _data.Vriend.Where(u => u.User.Id == id && u.Accepted == false);
+
+}
+<style>
+    .extra {
+        text-align: left;
+    }
+
+    .extra:hover {
+        background-color: lightskyblue;
+        border-color: lightskyblue;
+    }
+
+    .current {
+        background-color: deepskyblue;
+        border-color: deepskyblue;
+    }
+</style>
+<h2>Friend Requests</h2>
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">UserName</th>
+            <th scope="col">Options</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in friends)
+        {
+
+         <tr>
+             @{ 
+                 var temp = _data.Users.FirstOrDefault(u => u.Id == item.UserId);
+             }
+            <td scope="row">
+                <a asp-controller="Home" asp-action="Profiel" asp-route-id="@temp.Id">
+                    <input type="button" style="border:none" value="@temp.UserName" />
+                </a>
+            </td>
+                       
+            <td>
+                <a asp-controller="Home" asp-action="ComfirmFriend" asp-route-vriendId="@item.VriendId">
+                    <input type="button" class="btn btn-primary extra" value="Accept Request" />
+                </a>
+                <a asp-controller="Home" asp-action="RemoveFriend" asp-route-vriendId="@item.VriendId">
+                    <input type="button" class="btn btn-danger" value="Remove Request" />
+                </a>
+            </td>
+
+        </tr>
+
+        }
+    </tbody>
+</table>
+
+<h2>Pending Requests</h2>
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">UserName</th>
+            <th scope="col">Options</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in friendsMaybe)
+        {
+
+            <tr>
+                @{
+                    var temp = _data.Users.FirstOrDefault(u => u.Id == item.BevriendId);
+                }
+                <td scope="row">
+                    <a asp-controller="Home" asp-action="Profiel" asp-route-id="@temp.Id">
+                        <input type="button" style="border:none" value="@temp.UserName" />
+                    </a>
+                </td>
+
+                <td>
+                    <a asp-controller="Home" asp-action="RemoveFriend" asp-route-vriendId="@item.VriendId">
+                        <input type="button" class="btn btn-danger" value="Remove Request" />
+                    </a>
+                </td>
+
+            </tr>
+
+        }
+    </tbody>
+</table>

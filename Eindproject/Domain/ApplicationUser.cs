@@ -14,8 +14,11 @@ namespace Eindproject.Domain
     /// </summary>
     public class ApplicationUser : IdentityUser
     {
+
         public string Voornaam { get; set; }
         public string Achternaam { get; set; }
+
+
 
         //public string Foto { get; set; }
         public string Fullname() 
