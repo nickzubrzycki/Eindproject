@@ -22,7 +22,7 @@ namespace Eindproject.Data
 
         public void DeleteNotification(int Id)
         {
-            var notification = applicationDbContext.Notifications.SingleOrDefault(m => m.Id == Id);
+            var notification = applicationDbContext.Notifications.SingleOrDefault(m => m.NotificationId == Id);
 
             if (notification != null)
             {
@@ -33,7 +33,7 @@ namespace Eindproject.Data
 
         public Notification GetNotification(int Id)
         {
-            return applicationDbContext.Notifications.SingleOrDefault(n => n.Id == Id);
+            return applicationDbContext.Notifications.SingleOrDefault(n => n.NotificationId == Id);
         }
 
         public IEnumerable<Notification> GetNotifications()
@@ -43,7 +43,7 @@ namespace Eindproject.Data
 
         public void UpdateNotification(int Id, Notification notification)
         {
-            var notificationDb = applicationDbContext.Notifications.SingleOrDefault(n => n.Id == Id);
+            var notificationDb = applicationDbContext.Notifications.SingleOrDefault(n => n.NotificationId == Id);
 
             if(notificationDb != null)
             {

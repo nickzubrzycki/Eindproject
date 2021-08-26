@@ -12,15 +12,16 @@ namespace Eindproject.Domain
         [Key]
         public int LijstId { get; set; }
 
+        public string UserId { get; set; }
 
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
 
-        public DateTime ToegeVoegdOp { get; set; }
 
-        public DateTime BewerktOp { get; set; }
+        public DateTime ToegeVoegdOp { get; set; } = DateTime.Now;
 
-        public ICollection<SerieOfFilm> serieFilmInLijsts { get; set; }
+        public DateTime BewerktOp { get; set; } = DateTime.Now;
+
 
     
     

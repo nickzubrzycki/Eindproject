@@ -6,25 +6,31 @@ using System.Threading.Tasks;
 
 namespace Eindproject.Domain
 {
-    public class SerieOfFilm
+    public class SerieOfFilmInLijst
     {
-        [ForeignKey("Lijst")]
+        public int ApiId { get; set; }
         public int LijstId { get; set; }
-        //Inbrengen van remote Database => Foreign Key
-        public string SerieOfFilmId { get; set; }
-
+        [ForeignKey("LijstId")]
+        public Lijst Lijst { get; set; }
+        public string SerieOfFilmInLijstId { get; set; }
         public double Score { get; set; }
 
+        public string OriginalTitle { get; set; }
         public int aantalAfleveringen { get; set; }
 
         public TimeSpan tijdPerAflevering { get; set; }
 
         public int aantalGekekenAfleveringen { get; set; }
-
-        [ForeignKey("Status")]
+        
         public int StatusId { get; set; }
-        public Status Status { get; set; }
 
-        public Lijst Lijst { get; set; }
+        [ForeignKey("StatusId")]
+        public virtual Status Status { get; set; }
+
+
+        public string FilmUrl { get; set; }
+
+
+
     }
 }

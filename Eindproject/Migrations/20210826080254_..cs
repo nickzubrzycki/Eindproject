@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Eindproject.Migrations
 {
-    public partial class intitial : Migration
+    public partial class _ : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,7 @@ namespace Eindproject.Migrations
                 {
                     StatusId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Omschrijving = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    StatusWatch = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -107,8 +107,8 @@ namespace Eindproject.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -152,8 +152,8 @@ namespace Eindproject.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -182,6 +182,44 @@ namespace Eindproject.Migrations
                     table.PrimaryKey("PK_Lijsts", x => x.LijstId);
                     table.ForeignKey(
                         name: "FK_Lijsts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    NotificationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FromUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ToUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    HeaderMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BodyMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.NotificationId);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_FromUserId",
+                        column: x => x.FromUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_ToUserId",
+                        column: x => x.ToUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -219,17 +257,20 @@ namespace Eindproject.Migrations
                 name: "SerieOfFilms",
                 columns: table => new
                 {
-                    SerieOfFilmId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SerieOfFilmInLijstId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApiId = table.Column<int>(type: "int", nullable: false),
                     LijstId = table.Column<int>(type: "int", nullable: false),
                     Score = table.Column<double>(type: "float", nullable: false),
+                    OriginalTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     aantalAfleveringen = table.Column<int>(type: "int", nullable: false),
                     tijdPerAflevering = table.Column<TimeSpan>(type: "time", nullable: false),
                     aantalGekekenAfleveringen = table.Column<int>(type: "int", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false)
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    FilmUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SerieOfFilms", x => x.SerieOfFilmId);
+                    table.PrimaryKey("PK_SerieOfFilms", x => x.SerieOfFilmInLijstId);
                     table.ForeignKey(
                         name: "FK_SerieOfFilms_Lijsts_LijstId",
                         column: x => x.LijstId,
@@ -243,6 +284,26 @@ namespace Eindproject.Migrations
                         principalColumn: "StatusId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Lijsts",
+                columns: new[] { "LijstId", "BewerktOp", "ToegeVoegdOp", "UserId" },
+                values: new object[] { 1, new DateTime(2021, 8, 26, 10, 2, 53, 11, DateTimeKind.Local).AddTicks(2714), new DateTime(2021, 8, 26, 10, 2, 53, 2, DateTimeKind.Local).AddTicks(2967), null });
+
+            migrationBuilder.InsertData(
+                table: "Statuses",
+                columns: new[] { "StatusId", "StatusWatch" },
+                values: new object[] { 1, false });
+
+            migrationBuilder.InsertData(
+                table: "Statuses",
+                columns: new[] { "StatusId", "StatusWatch" },
+                values: new object[] { 2, true });
+
+            migrationBuilder.InsertData(
+                table: "SerieOfFilms",
+                columns: new[] { "SerieOfFilmInLijstId", "ApiId", "FilmUrl", "LijstId", "OriginalTitle", "Score", "StatusId", "aantalAfleveringen", "aantalGekekenAfleveringen", "tijdPerAflevering" },
+                values: new object[] { "1", 200, "/jYtNUfMbU6DBbmd4LUS19u4hF4p.jpg", 1, "Star Trek: The Next Generation Collection", 8.0, 1, 0, 0, new TimeSpan(0, 0, 0, 0, 0) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -289,6 +350,21 @@ namespace Eindproject.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_FromUserId",
+                table: "Notifications",
+                column: "FromUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_ToUserId",
+                table: "Notifications",
+                column: "ToUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SerieOfFilms_LijstId",
                 table: "SerieOfFilms",
                 column: "LijstId");
@@ -325,6 +401,9 @@ namespace Eindproject.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "SerieOfFilms");

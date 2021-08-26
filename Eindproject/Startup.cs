@@ -34,6 +34,7 @@ namespace Eindproject
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<IMovieRepository, MovieRepository>();
             Uri themovieDbUri = new Uri("https://api.themoviedb.org/");
 
             HttpClient httpClient = new HttpClient
@@ -41,7 +42,7 @@ namespace Eindproject
                 BaseAddress = themovieDbUri
             };
 
-            services.AddSingleton<HttpClient>(httpClient);
+            services.AddSingleton(httpClient);
 
             
             services.AddControllersWithViews();
