@@ -20,7 +20,7 @@ namespace Eindproject.Controllers
     [AllowAnonymous]
     public class MovieController : Controller
     {
-        private static int Id;
+        
         public readonly static string api_key = "70f88e8eb928860994e741cfd80e1ff0";
         public readonly static string base_url = "https://image.tmdb.org/t/p";
         public readonly static string file_size = "/w500";

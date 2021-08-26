@@ -116,8 +116,8 @@ namespace Eindproject.Migrations
                         new
                         {
                             LijstId = 1,
-                            BewerktOp = new DateTime(2021, 8, 22, 23, 28, 39, 946, DateTimeKind.Local).AddTicks(3431),
-                            ToegeVoegdOp = new DateTime(2021, 8, 22, 23, 28, 39, 938, DateTimeKind.Local).AddTicks(7863)
+                            BewerktOp = new DateTime(2021, 8, 26, 10, 2, 53, 11, DateTimeKind.Local).AddTicks(2714),
+                            ToegeVoegdOp = new DateTime(2021, 8, 26, 10, 2, 53, 2, DateTimeKind.Local).AddTicks(2967)
                         });
                 });
 
@@ -226,7 +226,7 @@ namespace Eindproject.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("StatusWatch")
+                    b.Property<bool?>("StatusWatch")
                         .HasColumnType("bit");
 
                     b.HasKey("StatusId");
@@ -252,6 +252,9 @@ namespace Eindproject.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Accepted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("BevriendId")
                         .HasColumnType("nvarchar(450)");
@@ -346,12 +349,10 @@ namespace Eindproject.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -388,12 +389,10 @@ namespace Eindproject.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
