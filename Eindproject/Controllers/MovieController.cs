@@ -418,7 +418,7 @@ namespace Eindproject.Controllers
                     return "No result found.";
                 case 500:
                     return "An error occurred in the server";
-                    break;
+                    
 
             }
             return null;
