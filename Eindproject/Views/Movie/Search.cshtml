@@ -1,0 +1,109 @@
+﻿@model IEnumerable<AllMoviesSeriesViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+    // Display the keyword in the top of the page
+*@
+
+@{
+
+    string baseUrl = (string)ViewData["Base"];
+    string fileSize = (string)ViewData["File"];
+    string Keyword = (string)ViewData["search"];
+    //Als er een runtime is dan is het een film 
+
+
+    List<int> infoMovieSerie = new List<int>();
+    
+
+
+
+}
+<style>
+    .card:hover {
+        box-shadow: -1px 9px 40px -12px #808080;
+    }
+</style>
+
+
+<h3 class="w-25" style="background-color:aqua; color:#fff;">@Keyword</h3>
+
+
+@if (!Model.Any())
+{
+    <h2 class="text-capitalize font-weight-bold container" style="text-align:left; padding-right:4px;">Not Result Found</h2>
+}
+else
+{
+
+<div class="card-deck">
+    @foreach (var ms in Model)
+    {
+        
+        <div class="col-sm-6 col-lg-4 mb-3">
+            <div class="card mb-3">
+                <img src="@baseUrl@fileSize@ms.poster_path"
+                     class="card-img-top"
+                     alt="..." />
+                <div class="card-body  text-center">
+                    <div class="d-flex bg-dark text-white">
+                        <div class="p-2  flex-fill alert-info">@ms.vote_average</div>
+                        @if (ms.MovieOrSerie == "Movie")
+                        {
+                            <div class="p-2  flex-fill">@ms.release_date.Value.Year</div>
+                             
+                        }
+                        else
+                        {
+                            <div class="p-2  flex-fill">Total Seasons: @ms.number_of_seasons</div>
+                            <div class="p-2  flex-fill">Episodes: @ms.number_of_episodes</div>
+
+                        }
+
+                    </div>
+                    <p class="card-text">
+                        @ms.overview
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Movie</a>
+                </div>
+
+            </div>
+        </div> 
+        
+
+    }
+</div>
+
+}
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    console.log("Hallo");
+
+    $('.card').hover{
+        function() {
+            $(this).animate({
+                marginTop: "-=1%",
+                marginBottom: "+=1%"
+            }, 200);
+        },
+        function() {
+            $(this).animate({
+                marginTop: "+=1%",
+                marginBottom: "-=1%"
+            });
+        }
+    };
+
+
+
+
+    //Meegeven van Id en movieType in de URL
+    // Ik heb een trigger nodig die de Ajax call doet
+    //
+
+ 
+    
+</script>

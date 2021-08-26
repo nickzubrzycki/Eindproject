@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eindproject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210817074450_friendrework")]
-    partial class friendrework
+    [Migration("20210826080254_.")]
+    partial class _
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -113,15 +113,74 @@ namespace Eindproject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Lijsts");
+
+                    b.HasData(
+                        new
+                        {
+                            LijstId = 1,
+                            BewerktOp = new DateTime(2021, 8, 26, 10, 2, 53, 11, DateTimeKind.Local).AddTicks(2714),
+                            ToegeVoegdOp = new DateTime(2021, 8, 26, 10, 2, 53, 2, DateTimeKind.Local).AddTicks(2967)
+                        });
                 });
 
-            modelBuilder.Entity("Eindproject.Domain.SerieOfFilm", b =>
+            modelBuilder.Entity("Eindproject.Domain.Notification", b =>
                 {
-                    b.Property<string>("SerieOfFilmId")
+                    b.Property<int>("NotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BodyMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FromUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("HeaderMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ToUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("NotificationId");
+
+                    b.HasIndex("FromUserId");
+
+                    b.HasIndex("ToUserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("Eindproject.Domain.SerieOfFilmInLijst", b =>
+                {
+                    b.Property<string>("SerieOfFilmInLijstId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ApiId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FilmUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LijstId")
                         .HasColumnType("int");
+
+                    b.Property<string>("OriginalTitle")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Score")
                         .HasColumnType("float");
@@ -138,13 +197,28 @@ namespace Eindproject.Migrations
                     b.Property<TimeSpan>("tijdPerAflevering")
                         .HasColumnType("time");
 
-                    b.HasKey("SerieOfFilmId");
+                    b.HasKey("SerieOfFilmInLijstId");
 
                     b.HasIndex("LijstId");
 
                     b.HasIndex("StatusId");
 
                     b.ToTable("SerieOfFilms");
+
+                    b.HasData(
+                        new
+                        {
+                            SerieOfFilmInLijstId = "1",
+                            ApiId = 200,
+                            FilmUrl = "/jYtNUfMbU6DBbmd4LUS19u4hF4p.jpg",
+                            LijstId = 1,
+                            OriginalTitle = "Star Trek: The Next Generation Collection",
+                            Score = 8.0,
+                            StatusId = 1,
+                            aantalAfleveringen = 0,
+                            aantalGekekenAfleveringen = 0,
+                            tijdPerAflevering = new TimeSpan(0, 0, 0, 0, 0)
+                        });
                 });
 
             modelBuilder.Entity("Eindproject.Domain.Status", b =>
@@ -154,12 +228,24 @@ namespace Eindproject.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Omschrijving")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool?>("StatusWatch")
+                        .HasColumnType("bit");
 
                     b.HasKey("StatusId");
 
                     b.ToTable("Statuses");
+
+                    b.HasData(
+                        new
+                        {
+                            StatusId = 1,
+                            StatusWatch = false
+                        },
+                        new
+                        {
+                            StatusId = 2,
+                            StatusWatch = true
+                        });
                 });
 
             modelBuilder.Entity("Eindproject.Domain.Vriend", b =>
@@ -265,12 +351,10 @@ namespace Eindproject.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -307,12 +391,10 @@ namespace Eindproject.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -331,10 +413,31 @@ namespace Eindproject.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Eindproject.Domain.SerieOfFilm", b =>
+            modelBuilder.Entity("Eindproject.Domain.Notification", b =>
+                {
+                    b.HasOne("Eindproject.Domain.ApplicationUser", "FromUser")
+                        .WithMany()
+                        .HasForeignKey("FromUserId");
+
+                    b.HasOne("Eindproject.Domain.ApplicationUser", "ToUser")
+                        .WithMany()
+                        .HasForeignKey("ToUserId");
+
+                    b.HasOne("Eindproject.Domain.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("FromUser");
+
+                    b.Navigation("ToUser");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Eindproject.Domain.SerieOfFilmInLijst", b =>
                 {
                     b.HasOne("Eindproject.Domain.Lijst", "Lijst")
-                        .WithMany("serieFilmInLijsts")
+                        .WithMany()
                         .HasForeignKey("LijstId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -414,11 +517,6 @@ namespace Eindproject.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Eindproject.Domain.Lijst", b =>
-                {
-                    b.Navigation("serieFilmInLijsts");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Eindproject</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -26,8 +27,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Index">Movies</a>
+                        </li>
+                        <li class="nav-item" style="margin:8px 3px 0px 0px; ">
+                            <div class="dropdown show">
+                                <a class="text-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    My Watchlist
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="WatchList">Watched</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="UnWatchList">Unwatched</a>
+                                </div>
+                            </div>
 
                         </li>
                     </ul>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eindproject.Domain
 {
@@ -7,8 +8,8 @@ namespace Eindproject.Domain
         [Key]
         public int StatusId { get; set; }
 
-        // Omschrijving: Als film/Serie gepland, gekeken of aan het kijken is
-        public string Omschrijving { get; set; }
+        public bool? StatusWatch { get; set; } 
+
 
     }
 }

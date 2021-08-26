@@ -1,0 +1,59 @@
+﻿@model AllMoviesSeriesViewModel[]
+@*
+
+
+*@
+@{
+
+    int counter = (int)ViewData["Counter"];
+    int prevMovies = counter - 1;
+    int nextMovies = counter + 1;
+
+}
+
+<h1> My Library UnWatched Movies & Tv-Series</h1>
+
+
+@if (Model.Any())
+{
+    <p>There were no Movies or Tv-Serie. First you need to add some movies or series</p>
+}
+
+else
+{
+    <div class="card-deck">
+
+        @foreach (var ms in Model)
+        {
+            <div class="col-sm-6 col-lg-4 mb-3">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="@ms.poster_path" alt="Card image cap">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@ms.title</h5>
+                        <p class="card-text">@ms.overview</p>
+                        <a href="#" class="btn btn-primary">See more info</a>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="#!" class="btn btn-primary">See Movie</a>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+        }
+
+    </div>
+
+    <p>
+        <a asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@prevMovies">Previous movies</a>
+        <span> - </span>
+        <a asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@nextMovies">Next movies</a>
+        <a asp-controller="movie" asp-action="SeeAllMovies">See All Movies</a>
+    </p>
+
+
+}
+
+

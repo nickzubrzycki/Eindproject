@@ -1,4 +1,5 @@
 ﻿using Eindproject.Data;
+using Eindproject.Domain;
 using Eindproject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,9 @@ namespace Eindproject.Controllers
         // Ophalen van IdentityUser voor de User Id 
         private NotificationRepository NotificationRepository ;
         private IEnumerable<NotificationViewModel> NotificationViews;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         public NotificationController(NotificationRepository notificationRepository,
-            UserManager<IdentityUser> userManager)
+            UserManager<ApplicationUser> userManager)
         {
             NotificationRepository = notificationRepository;
             _userManager = userManager;
@@ -27,17 +28,17 @@ namespace Eindproject.Controllers
         public IActionResult GetAllNotifications()
         {
             
-            var id = int.Parse(GetUserId().Result);
+            var id = GetUserId();
             
             // Ga kijken in de database van de ToUserId en als als id false is 
-            NotificationViews = NotificationRepository.GetNotifications().Where(n => id == n.Id && n.IsRead == false).Select(n => new NotificationViewModel
+            NotificationViews = NotificationRepository.GetNotifications().Where(n => id == n.ToUserId && n.IsRead == false).Select(n => new NotificationViewModel
             {
                  CreatedDate = n.CreatedDate,
                  BodyMessage = n.BodyMessage,
                  HeaderMessage = n.HeaderMessage, 
                  FromUserId = n.FromUserId,
                  ToUserId = n.ToUserId, 
-                 Id = n.Id, 
+                 Id = n.NotificationId, 
                  IsRead = n.IsRead, 
                  Url = n.Url
 
@@ -49,15 +50,15 @@ namespace Eindproject.Controllers
         }
 
 
-        public async Task<string> GetUserId()
+        public string  GetUserId()
         {
-           var user =  await _userManager.GetUserAsync(User);
-           return user.Id;
+            return _userManager.GetUserId(HttpContext.User);
+
 
         }
 
         public void DeleteAllReadNotifications(IEnumerable<NotificationViewModel> notificationViewModels,
-            int Id)
+            string id)
         {
             DateTime today = DateTime.Now;
             // Delete all the notifications that are older than 3 weeks 
@@ -65,7 +66,7 @@ namespace Eindproject.Controllers
             foreach(var notification in NotificationViews)
             {
                 if(notification.IsRead == true 
-                    && notification.ToUserId == Id 
+                    && notification.ToUserId == id
                     && (today.Date.Day - notification.CreatedDate.Date.Day) > 7)
                 {
                     NotificationRepository.DeleteNotification(notification.Id);
@@ -76,15 +77,15 @@ namespace Eindproject.Controllers
         // Laten tonen van alle gelezen van user 
         public IActionResult ShowAllReadNotifications()
         {
-            var id = int.Parse(GetUserId().Result);
-            var NotificationViews = NotificationRepository.GetNotifications().Where(n => id == n.Id && n.IsRead == true).Select(n => new NotificationViewModel
+            var id = GetUserId();
+            var NotificationViews = NotificationRepository.GetNotifications().Where(n => id == n.ToUserId && n.IsRead == true).Select(n => new NotificationViewModel
             {
                 CreatedDate = n.CreatedDate,
                 BodyMessage = n.BodyMessage,
                 HeaderMessage = n.HeaderMessage,
                 FromUserId = n.FromUserId,
                 ToUserId = n.ToUserId,
-                Id = n.Id,
+                Id = n.NotificationId,
                 IsRead = n.IsRead,
                 Url = n.Url
 
