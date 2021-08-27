@@ -49,10 +49,18 @@ namespace Eindproject.Controllers
         /// Voeg een nieuwe Film of Serie toe
         /// </summary>
         /// <returns></returns>
-        public IActionResult Add()
+        [HttpPost]
+        public IActionResult Add([FromRoute] AllMoviesSeriesViewModel ms)
         {
+            var newMovie = new SerieOfFilmInLijst
+            {
+                ApiId = ms.id
+            };
 
-            return View();
+            _context.SerieOfFilms.Add(newMovie);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Watchlist));
         }
 
 
