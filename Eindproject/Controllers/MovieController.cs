@@ -1,4 +1,5 @@
 ﻿using Eindproject.Data;
+using Eindproject.Domain;
 using Eindproject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,9 +50,11 @@ namespace Eindproject.Controllers
         /// </summary>
         /// <returns></returns>
         public IActionResult Add()
-        {
+        {        
+            
             return View();
-        }
+        }      
+        
 
         /// <summary>
         /// Update gegevens van film of serie
@@ -73,12 +76,11 @@ namespace Eindproject.Controllers
             // Voor echt Id te gaan halen en te displayen op het scherm
            
             
-            int Id = 0;
+            int Id = 0;         
             if(movietype == "Serie")
             {
                 Id = GetSpecificSerieMovie("series", name);
-                string TvUrl = $"3/tv/{Id}?api_key={api_key}&language=en-US";
-
+                string serieUrl = $"3/tv/{Id}?api_key={api_key}&language=en-US";
             }
             else
             {
@@ -87,7 +89,8 @@ namespace Eindproject.Controllers
                 Console.WriteLine(Id);
             }
             
-
+            
+            
             return View();
         }
 

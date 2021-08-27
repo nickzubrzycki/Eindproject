@@ -1,0 +1,89 @@
+﻿@model AllMoviesSeriesViewModel
+
+<div class="container">
+    <div class="row" style="min-height:min-content">
+        <div class="col-sm-8">
+            <section class="mb-3 card">
+                <div class="card-header">
+                    <h4><strong>@Model.title</strong></h4>
+                </div>
+                <div class="card-body" style="height:315px">
+                    <p style="font-style:italic">@Model.genres</p>
+                    <p>@Model.overview</p>
+                </div>
+            </section>
+        </div>
+        <div class="col-sm-4">
+            <section class="mb-3 d-none d-sm-block">
+                <img src="@Model.poster_path" height="400" />
+            </section>
+        </div>
+    </div>
+</div>
+
+@if (Model.MovieOrSerie == "Movie")
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <section class="mb-3 card">
+                    <div class="card-header">
+                        <h5><strong>Release date</strong></h5>
+                    </div>
+                    <div class="card-body text-right">
+                        <p>@Model.release_date</p>
+                    </div>
+                </section>
+            </div>
+            <div class="col-sm-4">
+                <section class="mb-3 card">
+                    <div class="card-header">
+                        <h5><strong>Runtime</strong></h5>
+                    </div>
+                    <div class="card-body text-right">
+                        <p>@Model.runtime min</p>
+                    </div>
+                </section>
+            </div>
+            <div class="col-sm-4">
+                <section class="mb-3 card">
+                    <div class="card-header">
+                        <h5><strong>Rating</strong></h5>
+                    </div>
+                    <div class="card-body text-right">
+                        <p>@Model.vote_average</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <section class="mb-3 card">
+                    <div class="card-header">
+                        <h5><strong>Runtime</strong></h5>
+                    </div>
+                    <div class="card-body text-right">
+                        <p>@Model.number_of_seasons seasons | @Model.number_of_episodes episodes</p>
+                    </div>
+                </section>
+            </div>
+            <div class="col-sm-4">
+                <section class="mb-3 card">
+                    <div class="card-header">
+                        <h5><strong>Rating</strong></h5>
+                    </div>
+                    <div class="card-body text-right">
+                        <p>@Model.vote_average</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+}
+
+<a asp-controller="Movie" asp-action="Add" class="btn btn-primary">Add to library</a>/>
