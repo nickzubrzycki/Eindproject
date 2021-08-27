@@ -35,7 +35,8 @@ else
                         <a href="#" class="btn btn-primary">See more info</a>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="#!" class="btn btn-primary">See Movie</a>
+                        <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Movie</a>
+                        <a asp-controller="Movie" asp-action="Delete" class="btn btn-primary">Remove from library</a>
                     </div>
 
                 </div>

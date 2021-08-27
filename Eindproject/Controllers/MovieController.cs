@@ -21,7 +21,7 @@ namespace Eindproject.Controllers
     [AllowAnonymous]
     public class MovieController : Controller
     {
-        
+
         public readonly static string api_key = "70f88e8eb928860994e741cfd80e1ff0";
         public readonly static string base_url = "https://image.tmdb.org/t/p";
         public readonly static string file_size = "/w500";
@@ -39,22 +39,22 @@ namespace Eindproject.Controllers
         }
         public IActionResult Index()
         {
-       
+
 
             return View();
         }
 
-     
+
         /// <summary>
         /// Voeg een nieuwe Film of Serie toe
         /// </summary>
         /// <returns></returns>
         public IActionResult Add()
-        {        
-            
+        {
+
             return View();
-        }      
-        
+        }
+
 
         /// <summary>
         /// Update gegevens van film of serie
@@ -74,10 +74,10 @@ namespace Eindproject.Controllers
         {
             // Terug ophalen van films of Serie in de file
             // Voor echt Id te gaan halen en te displayen op het scherm
-           
-            
-            int Id = 0;         
-            if(movietype == "Serie")
+
+
+            int Id = 0;
+            if (movietype == "Serie")
             {
                 Id = GetSpecificSerieMovie("series", name);
                 string serieUrl = $"3/tv/{Id}?api_key={api_key}&language=en-US";
@@ -88,15 +88,34 @@ namespace Eindproject.Controllers
                 string movieUrl = $"3/movie/{Id}?api_key={api_key}&language=en-US";
                 Console.WriteLine(Id);
             }
-            
-            
-            
+
+
+
             return View();
         }
 
-        public IActionResult Delete()
+        public IActionResult Delete([FromRoute] int Id)
         {
-            return View();
+            var ms = _context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id);
+
+            var vm = new MovieDeleteViewModel
+            {
+                Id = ms.ApiId,
+                Title = ms.OriginalTitle,
+                poster_path = ms.FilmUrl
+            };
+                
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmDelete([FromRoute] int Id)
+        {
+            _context.SerieOfFilms.Remove(_context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id));
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Watchlist));
         }
 
         public IActionResult UnWatchlist(int counter)
