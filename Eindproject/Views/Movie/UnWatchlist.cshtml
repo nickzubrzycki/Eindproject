@@ -11,6 +11,7 @@
 
 }
 
+
 <h1> My Library</h1>
 
 
@@ -22,29 +23,29 @@
 
 else
 {
-<div class="card-deck">
+    <div class="card-deck">
 
-    @foreach (var ms in Model)
-    {
-        <div class="col-sm-6 col-lg-4 mb-3">
-            <div class="card mb-3">
-                <img class="card-img-top" src="@ms.poster_path" alt="Card image cap">
-                <div class="card-body text-center">
-                    <h5 class="card-title">@ms.title</h5>
-                    <p class="card-text">@ms.overview</p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="#!" class="btn btn-primary">See Movie</a>
-                </div>
+        @foreach (var ms in Model)
+        {
+            <div class="col-sm-6 col-lg-4 mb-3">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="@ms.poster_path" alt="Card image cap">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@ms.title</h5>
+                        <p class="card-text">@ms.overview</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="#!" class="btn btn-primary">See Movie</a>
+                    </div>
 
+                </div>
             </div>
-        </div>
 
 
 
-    }
+        }
 
-</div>
+    </div>
 
 
     <nav aria-label="Page navigation example">
@@ -52,15 +53,15 @@ else
             <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@prevMovies">Previous </a></li>
             @for (int i = 0; i < totalPages; i++)
             {
-            <li class="page-item"><a  class="page-link" asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@i">@i</a></li>
+                <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@i">@i</a></li>
             }
-            <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@nextMovies">Next </a></li> 
+            <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@nextMovies">Next </a></li>
         </ul>
     </nav>
 
-    
+
     <span> - </span>
-    
+
     <a asp-controller="movie" asp-action="SeeAllMovies">See All Movies</a>
 
 }
