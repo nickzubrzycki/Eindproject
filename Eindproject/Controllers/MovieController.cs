@@ -1,4 +1,5 @@
 ﻿using Eindproject.Data;
+using Eindproject.Domain;
 using Eindproject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace Eindproject.Controllers
     [AllowAnonymous]
     public class MovieController : Controller
     {
-        
+
         public readonly static string api_key = "70f88e8eb928860994e741cfd80e1ff0";
         public readonly static string base_url = "https://image.tmdb.org/t/p";
         public readonly static string file_size = "/w500";
@@ -40,20 +41,30 @@ namespace Eindproject.Controllers
         }
         public IActionResult Index()
         {
-       
+
 
             return View();
         }
 
-     
+
         /// <summary>
         /// Voeg een nieuwe Film of Serie toe
         /// </summary>
         /// <returns></returns>
-        public IActionResult Add()
+        [HttpPost]
+        public IActionResult Add([FromRoute] AllMoviesSeriesViewModel ms)
         {
-            return View();
+            var newMovie = new SerieOfFilmInLijst
+            {
+                ApiId = ms.id
+            };
+
+            _context.SerieOfFilms.Add(newMovie);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Watchlist));
         }
+
 
         /// <summary>
         /// Update gegevens van film of serie
@@ -106,6 +117,10 @@ namespace Eindproject.Controllers
             int random = rng.Next(0, 10);
 
             if (true)
+
+
+            int Id = 0;
+            if (movietype == "Serie")
             {
                 int id = GetRandomMovie("series");
                 string tvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
@@ -115,6 +130,8 @@ namespace Eindproject.Controllers
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
 
+                Id = GetSpecificSerieMovie("series", name);
+                string serieUrl = $"3/tv/{Id}?api_key={api_key}&language=en-US";
             }
             else
             {
@@ -126,14 +143,40 @@ namespace Eindproject.Controllers
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
 
+                Id = GetSpecificSerieMovie("movies", name);
+                string movieUrl = $"3/movie/{Id}?api_key={api_key}&language=en-US";
+                Console.WriteLine(Id);
+            }
+
 
             }
             return View(vm);
+
+            return View();
         }
 
-        public IActionResult Delete()
+        public IActionResult Delete([FromRoute] int Id)
         {
-            return View();
+            var ms = _context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id);
+
+            var vm = new MovieDeleteViewModel
+            {
+                Id = ms.ApiId,
+                Title = ms.OriginalTitle,
+                poster_path = ms.FilmUrl
+            };
+                
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmDelete([FromRoute] int Id)
+        {
+            _context.SerieOfFilms.Remove(_context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id));
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Watchlist));
         }
 
         public IActionResult UnWatchlist(int counter)
