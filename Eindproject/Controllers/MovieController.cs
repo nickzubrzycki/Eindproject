@@ -62,7 +62,7 @@ namespace Eindproject.Controllers
             _context.SerieOfFilms.Add(newMovie);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Watchlist));
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -114,13 +114,9 @@ namespace Eindproject.Controllers
             // View Al aanmaken
             AllMoviesSeriesViewModel vm = null;
             
-            int random = rng.Next(0, 10);
+            int random = rng.Next(0, 10);           
 
-            if (true)
-
-
-            int Id = 0;
-            if (movietype == "Serie")
+            if (random % 2 == 0)
             {
                 int id = GetRandomMovie("series");
                 string tvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
@@ -130,8 +126,6 @@ namespace Eindproject.Controllers
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
 
-                Id = GetSpecificSerieMovie("series", name);
-                string serieUrl = $"3/tv/{Id}?api_key={api_key}&language=en-US";
             }
             else
             {
@@ -142,19 +136,10 @@ namespace Eindproject.Controllers
                 vm = GetMovieOrSerie(movieUrl).Result;
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
-
-                Id = GetSpecificSerieMovie("movies", name);
-                string movieUrl = $"3/movie/{Id}?api_key={api_key}&language=en-US";
-                Console.WriteLine(Id);
-            }
-
-
             }
             return View(vm);
-
-            return View();
         }
-
+            
         public IActionResult Delete([FromRoute] int Id)
         {
             var ms = _context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id);
@@ -165,7 +150,7 @@ namespace Eindproject.Controllers
                 Title = ms.OriginalTitle,
                 poster_path = ms.FilmUrl
             };
-                
+
 
             return View(vm);
         }
@@ -180,24 +165,24 @@ namespace Eindproject.Controllers
         }
 
         public IActionResult UnWatchlist(int counter)
-        {                      
+        {
 
             var vm = movieRepository.GetAllMoviesNotWatched().Select(x => new AllMoviesSeriesViewModel
             {
                 title = x.OriginalTitle,
-                poster_path = base_url+file_size+x.FilmUrl,
+                poster_path = base_url + file_size + x.FilmUrl,
 
             });
             List<AllMoviesSeriesViewModel[]> allMovies = new List<AllMoviesSeriesViewModel[]>();
-            
+
             int totalNumberOfMovies = vm.Count();
             int remainder = 0;
             int quotient = 0;
             int counterArray = 0;
-            counter = Math.Clamp(counter, 0, totalNumberOfMovies-1);
+            counter = Math.Clamp(counter, 0, totalNumberOfMovies - 1);
             Console.WriteLine(counter);
             ViewData["Counter"] = counter;
-            
+
             // Aanmaken van list + Aantal van aangemaakt array te bepalen via remainder en quotient
             allMovies = ListOfAllMoviePages(quotient, remainder, totalNumberOfMovies, allMovies);
 
@@ -273,7 +258,7 @@ namespace Eindproject.Controllers
         /// <returns></returns>
         private List<AllMoviesSeriesViewModel[]> ListOfAllMoviePages(int quotient,
             int remainder,
-            int totalNumberOfMovies, 
+            int totalNumberOfMovies,
             List<AllMoviesSeriesViewModel[]> allMovies)
         {
             // Even getal deelbaar door 5 dus 
@@ -284,14 +269,14 @@ namespace Eindproject.Controllers
                 {
                     AllMoviesSeriesViewModel[] allMovies1 = new AllMoviesSeriesViewModel[5];
                     allMovies.Add(allMovies1);
-                    
+
                 }
 
                 return allMovies;
             }
             else
             {
-                if(totalNumberOfMovies < 5)
+                if (totalNumberOfMovies < 5)
                 {
                     // Als het getal kleiner is dan 5 dan total aantal movies in 1 array 
                     allMovies.Add(new AllMoviesSeriesViewModel[totalNumberOfMovies]);
@@ -318,7 +303,7 @@ namespace Eindproject.Controllers
 
             }
         }
-        
+
         private List<AllMoviesSeriesViewModel[]> FillInListWithItems(
             List<AllMoviesSeriesViewModel> vm, int counterArray,
             List<AllMoviesSeriesViewModel[]> allMovies)
@@ -346,14 +331,14 @@ namespace Eindproject.Controllers
 
         private List<int> GetMovieOrSerieInfo(int id, string typeMovie)
         {
-           
+
             List<int> MovieInfo;
-            
-            if(typeMovie == "Serie")
+
+            if (typeMovie == "Serie")
             {
                 string TvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
                 AllMoviesSeriesViewModel serie = MakeRequestMovieSerie(id, TvUrl).Result;
-                MovieInfo = new List<int>{ serie.number_of_episodes, serie.season_number, serie.number_of_seasons };
+                MovieInfo = new List<int> { serie.number_of_episodes, serie.season_number, serie.number_of_seasons };
                 return MovieInfo;
             }
             else
@@ -363,7 +348,7 @@ namespace Eindproject.Controllers
                 MovieInfo = new List<int> { (int)movie.runtime };
                 return MovieInfo;
             }
-            
+
         }
         /// <summary>
         /// Search for the trending Movies and Series
@@ -458,7 +443,7 @@ namespace Eindproject.Controllers
                     else
                     {
                         moviesSeriesViewModel.MovieOrSerie = "Movie";
-       
+
                     }
                     // Plak de statuscode aan de eerste object dat je meegeeft 
 
@@ -494,7 +479,7 @@ namespace Eindproject.Controllers
                 // Read response asynchronously as JsonValue
                 var result = await response.Content.ReadAsStringAsync();
                 moviesSeriesViewModel = JsonConvert.DeserializeObject<AllMoviesSeriesViewModel>(result);
-                
+
                 // Omzetten van object attributen naar MovieViewModel 
                 // Omzetten naar json file en dan mappen 
                 var json = JsonConvert.SerializeObject(moviesSeriesViewModel);
@@ -550,7 +535,7 @@ namespace Eindproject.Controllers
                     return "No result found.";
                 case 500:
                     return "An error occurred in the server";
-                    
+
 
             }
             return null;
@@ -614,7 +599,7 @@ namespace Eindproject.Controllers
             };
 
             var jsonSerializer = new Newtonsoft.Json.JsonSerializer();
-            
+
             while (jsonReader.Read())
             {
                 // Search in the filename to 
@@ -628,7 +613,7 @@ namespace Eindproject.Controllers
                 else if (movieView.original_name == title)
                 {
                     return movieView.id;
-                }            
+                }
             }
             return 0;
         }
@@ -653,9 +638,9 @@ namespace Eindproject.Controllers
             };
 
             var jsonSerializer = new Newtonsoft.Json.JsonSerializer();
-            
-            Start:
-           
+
+        Start:
+
             if (filename == "movies")
             {
                 rid = rng.Next(860342);
@@ -682,7 +667,7 @@ namespace Eindproject.Controllers
             return 0;
         }
 
-        public  string SearchFile(string movieOrSerie)
+        public string SearchFile(string movieOrSerie)
         {
             // get to the correct directory in Json 
 
@@ -698,7 +683,7 @@ namespace Eindproject.Controllers
                 }
 
             }
-            
+
             return fileName;
 
 
@@ -707,6 +692,5 @@ namespace Eindproject.Controllers
 
 
     }
-
 
 }
