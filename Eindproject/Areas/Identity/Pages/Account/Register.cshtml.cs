@@ -88,7 +88,7 @@ namespace Eindproject.Areas.Identity.Pages.Account
                 }
             }
             // If we got this far, something failed, redisplay form
-            return RedirectToAction("Index", "HomeControler");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
