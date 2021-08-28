@@ -35,13 +35,27 @@
 
                 </div>
                 <div class="card-body" style="height:315px">
-                    <p>@Model.overview</p>
+                    @if (string.IsNullOrEmpty(Model.overview))
+                    {
+                        <p>We didn`t find any description for this movie</p>
+                    }
+                    else
+                    {
+                        <p>@Model.overview</p>
+                    }
                 </div>
             </section>
         </div>
         <div class="col-sm-3">
             <section class="mb-3 card">
-                <img src="@Model.poster_path" />
+                @if (Model.poster_path == "https://image.tmdb.org/t/p/w500")
+                {
+                    <img src="~/img/missingImage.jpg" />
+                }
+                else
+                {
+                    <img src="@Model.poster_path" />
+                }
             </section>
         </div>
     </div>
@@ -132,7 +146,7 @@
                 <section class="mb-3 card">
 
                     <div class="card-body">
-                        <p><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a> or <a asp-area="Identity" asp-page="/Account/Register">Register</a> to access lists</p>
+                        <p><a asp-area="Identity" asp-page="/Account/Login">Login</a> or <a asp-area="Identity" asp-page="/Account/Register">Register</a> to access lists</p>
                     </div>
                 </section>
             </div>
@@ -149,4 +163,3 @@
         </div>
     </div>
 </div>
-<h2>We can`t garentee info about every movie or tv show since we get it externaly</h2>>

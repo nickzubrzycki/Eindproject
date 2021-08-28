@@ -134,6 +134,7 @@ namespace Eindproject.Controllers
                 //openhalen via url 
                 //View vullen
                 vm = GetMovieOrSerie(movieUrl).Result;
+
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
             }
