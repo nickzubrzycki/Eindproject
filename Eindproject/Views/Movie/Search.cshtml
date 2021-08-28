@@ -26,7 +26,7 @@
 </style>
 
 
-<h3 class="w-25" style="background-color:aqua; color:#fff;">@Keyword</h3>
+<h2 class="w-25" color:#fff;">@Keyword</h2>
 
 
 @if (!Model.Any())
@@ -51,7 +51,7 @@ else
                         @if (ms.MovieOrSerie == "Movie")
                         {
                             <div class="p-2  flex-fill">@ms.release_date.Value.Year</div>
-                             
+
                         }
                         else
                         {
@@ -61,21 +61,35 @@ else
                         }
 
                     </div>
-                    <p class="card-text">
-                        @ms.overview
+                    <p class="card-text" style="height:128px">
+                        @*max char is 200*@
+                        @if (ms.overview.Length <= 200)
+                        {
+                            @ms.overview
+                        }
+                        else
+                        {
+                            @ms.overview.Substring(0, 200)<span>...</span>
+                        }
+
                     </p>
                 </div>
-                <div class="card-footer text-center">
-                    <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Movie</a>                    
-                </div>
-
+                @if (ms.MovieOrSerie == "Movie")
+                {
+                    <div class="card-footer text-center">
+                        <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Movie</a>
+                    </div> 
+                }
+                else if (ms.MovieOrSerie == "Serie")
+                {
+                    <div class="card-footer text-center">
+                        <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_name" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Serie</a>
+                    </div>
+                }
             </div>
-        </div> 
-        
-
+        </div>        
     }
 </div>
-
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>

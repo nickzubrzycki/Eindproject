@@ -27,7 +27,6 @@ namespace Eindproject.Domain
         [ForeignKey("StatusId")]
         public virtual Status Status { get; set; }
 
-
         public string FilmUrl { get; set; }
 
 
