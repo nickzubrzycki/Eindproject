@@ -34,7 +34,7 @@
     <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.ViewFriendsNavClass(ViewContext)" id="friends" asp-page="./ViewFriends">Friends <span class="badge badge-light">@countFriends</span></a></li>
     <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.FriendRequestsNavClass(ViewContext)" id="personal-data" asp-page="./FriendRequests">FriendRequests <span class="badge badge-light">@countFriendRequests</span></a></li>
     @*Komt nog een if voor te checken of gebruiker admin is*@
-    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.FriendRequestsNavClass(ViewContext)" id="personal-data" asp-page="./CreateRole">Create Role </a></li>
-    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.FriendRequestsNavClass(ViewContext)" id="personal-data" asp-page="./ManageRole">Manage Role </a></li>
+    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.CreateRoleNavClass(ViewContext)" id="personal-data" asp-page="./CreateRole">Create Role </a></li>
+    <li class="nav-item" style="margin-bottom: 0.25em;"><a class="nav-link btn btn-primary extra @ManageNavPages.ManageRoleNavClass(ViewContext)" id="personal-data" asp-page="./ManageRole">Manage Role </a></li>
 
 </ul>

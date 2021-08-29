@@ -97,7 +97,14 @@ namespace Eindproject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        public JsonResult DoesUserEmailExist(string email)
+        {
 
+            var user = _data.Users.FirstOrDefault(u => u.Email == email);
+
+            return Json(user == null);
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
