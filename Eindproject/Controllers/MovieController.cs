@@ -30,6 +30,7 @@ namespace Eindproject.Controllers
         private readonly HttpClient httpClient;
         private readonly ApplicationDbContext _context;
         private readonly IMovieRepository movieRepository;
+        private static MovieCommentViewModel MovieComment;
         Random rng = new Random();
 
         private readonly ICommentRepository commentRepository;
@@ -102,32 +103,37 @@ namespace Eindproject.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ViewFilmSerie([FromForm]MovieCommentViewModel movieCommentViewModel)
+        public async Task<IActionResult> ViewFilmSerie([FromForm] MovieCommentViewModel movieCommentViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                Comment comment = new Comment();
-                comment.Created_Date = DateTime.Now;
-                var user = await userManager.GetUserAsync(User);
-                comment.UserId = user.Id;
-                Console.WriteLine(comment.Comment_Message);
-                if(movieCommentViewModel.MovieOrSerie == "Movie")
-                {
-                    comment.MovieOrSerie_Title = movieCommentViewModel.original_title;
-                    commentRepository.AddComment(comment);
-                }
-                else
-                {
-                    comment.MovieOrSerie_Title = movieCommentViewModel.original_name;
-                    commentRepository.AddComment(comment);
-                }
-                
-                
-                return View(movieCommentViewModel);
 
-            }
+                if(ModelState.IsValid)
+                {
+                    Comment comment = new Comment();
+                    comment.Created_Date = DateTime.Now;
+                    var user = await userManager.GetUserAsync(User);
+                    comment.UserId = user.Id;
+                    comment.Comment_Message = movieCommentViewModel.message;
+                    if (MovieComment.MovieOrSerie == "Movie")
+                    {
+                        comment.MovieOrSerie_Title = MovieComment.original_title;
+                        commentRepository.AddComment(comment);
+                        MovieComment.UserToComment = GenerateCommentsForMovie(comment.MovieOrSerie_Title);
+                    }
+                    else
+                    {
+                        comment.MovieOrSerie_Title = MovieComment.original_name;
+                        commentRepository.AddComment(comment);
+                        MovieComment.UserToComment = GenerateCommentsForMovie(comment.MovieOrSerie_Title);
+                    }
 
-            return View(movieCommentViewModel);
+
+                }
+
+            //Zorgen dat als ik een view terug geef
+
+            return View(MovieComment);
+
+  
         }
 
 
@@ -147,8 +153,9 @@ namespace Eindproject.Controllers
             {
                 int id = GetSpecificSerieMovie("series", name);
                 string tvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
-                //openhalen via url 
-                //View vullen
+                //Opvullen van alle comments for the serie 
+
+               
                 vm = GetMovieOrSerie(tvUrl).Result;
                 vm.poster_path = base_url + file_size + vm.poster_path;
             }
@@ -162,8 +169,9 @@ namespace Eindproject.Controllers
                 vm.poster_path = base_url + file_size + vm.poster_path;
 
             }
-            //Omzetten naar een andere viewmodel
-            
+          
+            vm.UserToComment = GenerateCommentsForMovie(name);
+            MovieComment = vm;
             return View(vm);
         }
         public IActionResult ViewRandomFilmSerie()
