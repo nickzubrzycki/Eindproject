@@ -46,6 +46,8 @@ namespace Eindproject.Controllers
             };
 
             return View(vm);
+
+            
         }
        
         public IActionResult UserSearch(string searchString)

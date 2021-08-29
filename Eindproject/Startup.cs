@@ -35,6 +35,7 @@ namespace Eindproject
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
             services.AddTransient<IMovieRepository, MovieRepository>();
             Uri themovieDbUri = new Uri("https://api.themoviedb.org/");
 
@@ -85,8 +86,13 @@ namespace Eindproject
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "default1",
+                    pattern: "{controller=Comment}/{action=Add}/{message?}");
                 endpoints.MapRazorPages();
             });
+
+          
         }
     }
 }
