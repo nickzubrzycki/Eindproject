@@ -2,6 +2,7 @@
 using Eindproject.Domain;
 using Eindproject.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -29,21 +30,41 @@ namespace Eindproject.Controllers
         private readonly HttpClient httpClient;
         private readonly ApplicationDbContext _context;
         private readonly IMovieRepository movieRepository;
+        private static MovieCommentViewModel MovieComment;
         Random rng = new Random();
 
+        private readonly ICommentRepository commentRepository;
+        private readonly UserManager<ApplicationUser> userManager; 
+        private int itemsPerPage = 10; 
         public MovieController(ApplicationDbContext applicationDbContext,
             HttpClient httpClient,
-            IMovieRepository movieRepository)
+            IMovieRepository movieRepository, 
+            ICommentRepository commentRepository, 
+            UserManager<ApplicationUser> userManager)
         {
             this.httpClient = httpClient;
             _context = applicationDbContext;
             this.movieRepository = movieRepository;
+            this.commentRepository = commentRepository;
+            this.userManager = userManager;
         }
         public IActionResult Index()
         {
+            //Oproepen van Not realeased movies 
+            // Trending movies 
+            // Popular movies 
+            List<AllMoviesSeriesViewModel[]> allMoviesForStartPage = new List<AllMoviesSeriesViewModel[]>();
+
+            ViewData["Base"] = base_url;
+            ViewData["File"] = file_size;
 
 
-            return View();
+            allMoviesForStartPage.Add(TrendingMoviesAndSeries());
+            allMoviesForStartPage.Add(GetAllMoviesNotReleased());
+            allMoviesForStartPage.Add(GetMostPopularMovies());
+
+
+            return View(allMoviesForStartPage);
         }
 
 
@@ -75,23 +96,66 @@ namespace Eindproject.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Post a new Comment from the user on the movie
+        /// </summary>
+        /// <param name="movieCommentViewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ViewFilmSerie([FromForm] MovieCommentViewModel movieCommentViewModel)
+        {
+
+                if(ModelState.IsValid)
+                {
+                    Comment comment = new Comment();
+                    comment.Created_Date = DateTime.Now;
+                    var user = await userManager.GetUserAsync(User);
+                    comment.UserId = user.Id;
+                    comment.Comment_Message = movieCommentViewModel.message;
+                    if (MovieComment.MovieOrSerie == "Movie")
+                    {
+                        comment.MovieOrSerie_Title = MovieComment.original_title;
+                        commentRepository.AddComment(comment);
+                        MovieComment.UserToComment = GenerateCommentsForMovie(comment.MovieOrSerie_Title);
+                    }
+                    else
+                    {
+                        comment.MovieOrSerie_Title = MovieComment.original_name;
+                        commentRepository.AddComment(comment);
+                        MovieComment.UserToComment = GenerateCommentsForMovie(comment.MovieOrSerie_Title);
+                    }
+
+
+                }
+
+            //Zorgen dat als ik een view terug geef
+
+            return View(MovieComment);
+
+  
+        }
+
 
         /// <summary>
         /// Nakijken gegevens film en serie
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
         public IActionResult ViewFilmSerie(string name, string movietype)
         {
             // Terug ophalen van films of Serie in de file
             // Voor echt Id te gaan halen en te displayen op het scherm
             // View Al aanmaken
-            AllMoviesSeriesViewModel vm = null;
+            MovieCommentViewModel vm = null;
+         
             if(movietype == "Serie")
             {
                 int id = GetSpecificSerieMovie("series", name);
                 string tvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
-                //openhalen via url 
-                //View vullen
+                //Opvullen van alle comments for the serie 
+
+               
                 vm = GetMovieOrSerie(tvUrl).Result;
                 vm.poster_path = base_url + file_size + vm.poster_path;
             }
@@ -105,6 +169,9 @@ namespace Eindproject.Controllers
                 vm.poster_path = base_url + file_size + vm.poster_path;
 
             }
+          
+            vm.UserToComment = GenerateCommentsForMovie(name);
+            MovieComment = vm;
             return View(vm);
         }
         public IActionResult ViewRandomFilmSerie()
@@ -113,10 +180,15 @@ namespace Eindproject.Controllers
             // Voor echt Id te gaan halen en te displayen op het scherm
             // View Al aanmaken
             AllMoviesSeriesViewModel vm = null;
+            string movietype = "Movie";
             
-            int random = rng.Next(0, 10);           
+            int random = rng.Next(0, 10);
 
             if (random % 2 == 0)
+                movietype = "Serie";
+
+
+            if (movietype == "Serie")
             {
                 int id = GetRandomMovie("series");
                 string tvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
@@ -126,6 +198,8 @@ namespace Eindproject.Controllers
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
 
+  
+                return View(vm);
             }
             else
             {
@@ -137,8 +211,9 @@ namespace Eindproject.Controllers
 
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
+                return View(vm);
             }
-            return View(vm);
+        
         }
             
         public IActionResult Delete([FromRoute] int Id)
@@ -197,7 +272,7 @@ namespace Eindproject.Controllers
         }
 
         public IActionResult Watchlist(int counter)
-        {
+        { 
 
             var vm = movieRepository.GetAllMoviesWatch().Select(x => new AllMoviesSeriesViewModel
             {
@@ -205,48 +280,111 @@ namespace Eindproject.Controllers
                 poster_path = base_url + file_size + x.FilmUrl,
 
             });
-            List<AllMoviesSeriesViewModel[]> allMovies = new List<AllMoviesSeriesViewModel[]>();
 
-            int totalNumberOfMovies = vm.Count();
-            int remainder = 0;
-            int quotient = 0;
-            int counterArray = 0;
-            counter = Math.Clamp(counter, 0, totalNumberOfMovies);
-            Console.WriteLine(counter);
-            ViewData["Counter"] = counter;
-            // Aanmaken van list + Aantal van aangemaakt array te bepalen via remainder en quotient
-            allMovies = ListOfAllMoviePages(quotient, remainder, totalNumberOfMovies, allMovies);
-
-
-            // En dan op basis van wat de counter is de array meegeven via de view 
-
-            allMovies = FillInListWithItems(vm.ToList(), counterArray, allMovies);
-
-
-            var moviesAndSeries = new AllMoviesSeriesViewModel[5];
-            return View(moviesAndSeries);
+            return View(vm);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Search(string search)
+
+
+
+        
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Search(  string search,  int counter)
         {
             ViewData["search"] = search;
             ViewData["Base"] = base_url;
             ViewData["File"] = file_size;
+            var result = new List<AllMoviesSeriesViewModel>();
+            result = await MultiSearchMoviesOrSeries(search);
 
-            // Pak de Search word to make an Api call
-            // Wat als je geen search result terug krijgt 
-            // Display een tekst van niet found 
-            // Check of the 
+            if ( search !=  null)
+            {
+                List<AllMoviesSeriesViewModel[]> allMovies = new List<AllMoviesSeriesViewModel[]>();
+                if (result.Any())
+                {
+
+                    int totalNumberOfMovies = result.Count();
+                    int remainder = 0;
+                    int quotient = 0;
+                    int counterArray = 0;
 
 
-            var result = await MultiSearchMovieOrSerie(search);
+                    // Aanmaken van list + Aantal van aangemaakt array te bepalen via remainder en quotient
+                    allMovies = ListOfAllMoviePages(quotient, remainder, totalNumberOfMovies, allMovies);
+
+                    counter = Math.Clamp(counter, 0, allMovies.Count() - 1);
+                    ViewData["Counter"] = counter;
+
+
+                    // En dan op basis van wat de counter is de array meegeven via de view 
+                    allMovies = FillInListWithItems(result.ToList(), counterArray, allMovies);
+                    ViewData["TotalPages"] = allMovies.Count();
+                    var moviesAndSeries = allMovies[counter];
+                    return View(moviesAndSeries);
+
+
+                }
+                else
+                {
+
+                    ViewData["Counter"] = 0;
+                    ViewData["TotalPages"] = 0;
+                    return View(new AllMoviesSeriesViewModel[10]);
+                }
+
+            }
+            else
+            {
+
+                ViewData["Counter"] = 0;
+                ViewData["TotalPages"] = 0;
+
+                return View(new AllMoviesSeriesViewModel[10]);
+            }
+            
+         
 
             // Make a search 
 
-            return View(result);
+            
         }
 
+
+        private void GetLatestMoviesTrailers()
+        {
+            // Display the 3 latest trailers of movies in the cinema
+            // Find the movies that has just been released
+            // Search on the date from now
+            // Movies just released
+            
+        }
+
+        /// <summary>
+        /// Build a comment section in the detail for each film or serie.The comments order recent from oldest
+        /// </summary>
+        private Dictionary<ApplicationUser, Comment> GenerateCommentsForMovie(string title)
+        {
+            //Dictionary<int, ApplicationUser> UserIdToUser = MapUserIdToUser();
+            List<Comment> CommentsOrderedByDate = OrderComments(commentRepository.GetComments(title).ToList());
+            Dictionary<ApplicationUser, Comment> UserToComment = new Dictionary<ApplicationUser, Comment>();
+            // Haal alle userId's uit de lijst 
+            foreach(var comment in CommentsOrderedByDate)
+            {
+                var commentUserTuple = MapUserWithComment(ListAllUsers(), comment);
+                UserToComment.Add(commentUserTuple.Item1, commentUserTuple.Item2);
+            }
+
+            return UserToComment;
+
+
+      
+        }
+
+
+        private void LoadAllGenres()
+        {
+
+        }
 
         /// <summary>
         /// Geeft een lijst terug van een aantal arrays waar alle movieviewmodels inkomen in elke array verdeeld per 5. 
@@ -263,12 +401,12 @@ namespace Eindproject.Controllers
             List<AllMoviesSeriesViewModel[]> allMovies)
         {
             // Even getal deelbaar door 5 dus 
-            if (totalNumberOfMovies % 5 == 0)
+            if (totalNumberOfMovies % itemsPerPage == 0)
             {
-                quotient = totalNumberOfMovies / 5;
+                quotient = totalNumberOfMovies / itemsPerPage;
                 for (int i = 0; i < quotient; i++)
                 {
-                    AllMoviesSeriesViewModel[] allMovies1 = new AllMoviesSeriesViewModel[5];
+                    AllMoviesSeriesViewModel[] allMovies1 = new AllMoviesSeriesViewModel[itemsPerPage];
                     allMovies.Add(allMovies1);
 
                 }
@@ -277,7 +415,7 @@ namespace Eindproject.Controllers
             }
             else
             {
-                if (totalNumberOfMovies < 5)
+                if(totalNumberOfMovies < itemsPerPage)
                 {
                     // Als het getal kleiner is dan 5 dan total aantal movies in 1 array 
                     allMovies.Add(new AllMoviesSeriesViewModel[totalNumberOfMovies]);
@@ -285,12 +423,11 @@ namespace Eindproject.Controllers
                 }
                 else
                 {
-                    remainder = totalNumberOfMovies % 5;
-                    quotient = (totalNumberOfMovies - remainder) / 5;
-                    Console.WriteLine("list1: " + allMovies.Count());
+                    remainder = totalNumberOfMovies % itemsPerPage;
+                    quotient = (totalNumberOfMovies - remainder) / itemsPerPage;
                     for (int i = 0; i < quotient; i++)
                     {
-                        AllMoviesSeriesViewModel[] allMovies1 = new AllMoviesSeriesViewModel[5];
+                        AllMoviesSeriesViewModel[] allMovies1 = new AllMoviesSeriesViewModel[itemsPerPage];
                         allMovies.Add(allMovies1);
 
                     }
@@ -354,14 +491,17 @@ namespace Eindproject.Controllers
         /// <summary>
         /// Search for the trending Movies and Series
         /// </summary>
-        public void TrendingMoviesAndSeries()
+        private AllMoviesSeriesViewModel[] TrendingMoviesAndSeries()
         {
-            string url = "3/trending/all/day?api_key=" + api_key;
+            string url = $"3/trending/all/day?api_key={api_key}"; 
 
             //Checken of het result dat je terug krijgt niet leeg is 
             // Als het leeg is dan een error page laten zien dat er iets fout 
             List<AllMoviesSeriesViewModel> allMoviesSeriesViewModels = GetAllMoviesAndSeries(url).Result;
 
+            AllMoviesSeriesViewModel[] trendingMoviesAndSeries = ConvertListMoviesToArray(allMoviesSeriesViewModels);
+
+            return trendingMoviesAndSeries;
             // Display the trending movies in a carousel 
 
 
@@ -372,7 +512,7 @@ namespace Eindproject.Controllers
         /// <summary>
         /// Geeft alle films en series die nog niet zijn uitgekomen maar die wel al een release datum hebben
         /// </summary>
-        private void GetAllMoviesAndSeriesNotReleased()
+        private AllMoviesSeriesViewModel[] GetAllMoviesNotReleased()
         {
             string url = $"3/discover/movie?api_key={api_key}&language=en-US&sort_by=popularity.desc&" +
                $"include_adult=false&include_video=false&page=1&" +
@@ -380,21 +520,25 @@ namespace Eindproject.Controllers
 
             List<AllMoviesSeriesViewModel> allMoviesSeriesViewModels = GetAllMoviesAndSeries(url).Result;
 
+            AllMoviesSeriesViewModel[] moviesNotReleased = ConvertListMoviesToArray(allMoviesSeriesViewModels);
+            return moviesNotReleased;
         }
         /// <summary>
-        /// De films of series die juist zijn uitgekomen ophalen via Api. Allemaal ophalen en 20 max laten zien.
-        /// Laten kiezen of series moeten worden opgehaald of films
+        /// Geeft de 10 meest populaire films terug die momenteel in de cinema zijn
         /// </summary>
-        public void GetAllMoviesAndSeriesReleased()
+        /// <returns></returns>
+        public AllMoviesSeriesViewModel[] GetMostPopularMovies()
         {
             string url = $"3/discover/movie?api_key={api_key}&language=en-US&sort_by=popularity.desc&" +
                 $"include_adult=false&include_video=false&page=1&" +
                 $"primary_release_year={DateTime.Now.Year}&with_watch_monetization_types=flatrate";
 
             List<AllMoviesSeriesViewModel> allMoviesSeriesViewModels = GetAllMoviesAndSeries(url).Result;
-            // Handle different error that occur with switch
+            //Omzetten van list naar array. 10 best er in doen
+            AllMoviesSeriesViewModel[] mostPopularMovies = ConvertListMoviesToArray(allMoviesSeriesViewModels);
 
-            //Kijken naar de status code van de eerste 
+            return mostPopularMovies;
+         
 
 
         }
@@ -467,9 +611,9 @@ namespace Eindproject.Controllers
             return allMoviesSeriesViews;
 
         }
-        private async Task<AllMoviesSeriesViewModel> GetMovieOrSerie(string url)
+        private async Task<MovieCommentViewModel> GetMovieOrSerie(string url)
         {
-            AllMoviesSeriesViewModel moviesSeriesViewModel;
+            MovieCommentViewModel moviesSeriesViewModel;
             var response = await httpClient.GetAsync(url);
             try
             {
@@ -479,13 +623,13 @@ namespace Eindproject.Controllers
 
                 // Read response asynchronously as JsonValue
                 var result = await response.Content.ReadAsStringAsync();
-                moviesSeriesViewModel = JsonConvert.DeserializeObject<AllMoviesSeriesViewModel>(result);
+                moviesSeriesViewModel = JsonConvert.DeserializeObject<MovieCommentViewModel>(result);
 
                 // Omzetten van object attributen naar MovieViewModel 
                 // Omzetten naar json file en dan mappen 
                 var json = JsonConvert.SerializeObject(moviesSeriesViewModel);
 
-                moviesSeriesViewModel = JsonConvert.DeserializeObject<AllMoviesSeriesViewModel>(json);
+                moviesSeriesViewModel = JsonConvert.DeserializeObject<MovieCommentViewModel>(json);
                 moviesSeriesViewModel.StatusCode = (int)response.StatusCode;
                 if (moviesSeriesViewModel.release_date == null)
                 {
@@ -513,7 +657,7 @@ namespace Eindproject.Controllers
             catch (HttpRequestException e)
             {
                 Console.WriteLine(e.Message);
-                moviesSeriesViewModel = new AllMoviesSeriesViewModel();
+                moviesSeriesViewModel = new MovieCommentViewModel();
                 moviesSeriesViewModel.StatusCode = (int)e.StatusCode;
 
                 // Handle failure
@@ -543,14 +687,13 @@ namespace Eindproject.Controllers
         }
 
 
-        //Multisearch only for movies and  series 
 
-
-
+       
+ 
         /// <summary>
-        /// Zoek naar een bepaalde film of serie online via de API
+        /// Vraagt alle movies en series op basis van keywoord dat is ingegeven van de user
         /// </summary>
-        private Task<List<AllMoviesSeriesViewModel>> MultiSearchMovieOrSerie(string query)
+        private Task<List<AllMoviesSeriesViewModel>> MultiSearchMoviesOrSeries(string query)
         {
             // Merge the series and movies together
             string urlMovies = $"3/search/movie?api_key={api_key}&language=en-US&page=1&query={query}&include_adult=false";
@@ -559,11 +702,17 @@ namespace Eindproject.Controllers
             List<AllMoviesSeriesViewModel> allMoviesViewModels = GetAllMoviesAndSeries(urlMovies).Result;
             List<AllMoviesSeriesViewModel> allSeriesViewModels = GetAllMoviesAndSeries(urlSeries).Result;
 
+  
             var AllMoviesSeries = allMoviesViewModels.Concat(allSeriesViewModels).ToList();
             return Task.FromResult(AllMoviesSeries);
 
         }
-
+        /// <summary>
+        /// Maakt een request op een bepaalde film of serie op te halen via de api
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
         private async Task<AllMoviesSeriesViewModel> MakeRequestMovieSerie(int id, string url)
         {
 
@@ -584,7 +733,13 @@ namespace Eindproject.Controllers
          * Voorbeeld:  Random ophalen van een aantal films of series in json file
          */
 
-        //title moet niet meer filename geef ik wel nog mee maar dit doe ik voor ik de call maak
+        /// <summary>
+        /// Gaat de Id uit de json files movies of series halen om een request te kunnen doen voor een bepaalde
+        /// Serie of film op te halen. 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
         public int GetSpecificSerieMovie(string filename, string title)
         {
             List<AllMoviesSeriesViewModel> listOfMovies = new List<AllMoviesSeriesViewModel>();
@@ -667,8 +822,12 @@ namespace Eindproject.Controllers
             }
             return 0;
         }
-
-        public string SearchFile(string movieOrSerie)
+        /// <summary>
+        /// Zoek naar een bepaalde file voor movies of series
+        /// </summary>
+        /// <param name="movieOrSerie"></param>
+        /// <returns></returns>
+        public  string SearchFile(string movieOrSerie)
         {
             // get to the correct directory in Json 
 
@@ -691,7 +850,58 @@ namespace Eindproject.Controllers
 
         }
 
+        private AllMoviesSeriesViewModel[] ConvertListMoviesToArray(List<AllMoviesSeriesViewModel> allMovies)
+        {
+            AllMoviesSeriesViewModel[] allMoviesArray = new AllMoviesSeriesViewModel[10];
+            for (int i = 0; i < 10; i++)
+            {
+                allMoviesArray[i] = allMovies[i];
+            }
+            return allMoviesArray;
+        }
 
+        private List<ApplicationUser> ListAllUsers()
+        {
+            var AllUser = userManager.Users;
+            //Omzetten van IQuerable naar IEnumerable
+            List<ApplicationUser> applicationUsers = new List<ApplicationUser>();
+            foreach(var ms in AllUser)
+            {
+                applicationUsers.Add(ms);
+            }
+
+            return applicationUsers;
+        }
+
+        /// <summary>
+        /// Ordered de comments van oudste naar niewste. Moeten gemapt worden met comment en in dictionary gestoken worden
+        /// Daarom gaan de oudste er eerst in en dan pas als laatste de nieuwste
+        /// </summary>
+        /// <returns></returns>
+        private List<Comment> OrderComments(List<Comment> comments)
+        {
+            return comments.OrderBy(p => p.Created_Date).ToList();
+        }
+
+        /// <summary>
+        /// Map the Userid die in de Database van de Comment table zitten met de 
+        /// User van de db
+        /// </summary>
+        /// <returns></returns>
+        private Tuple<ApplicationUser, Comment> MapUserWithComment (List<ApplicationUser> AllUsers, Comment comment)
+        {
+            
+            foreach (var ms in AllUsers)
+            {
+               if(ms.Id == comment.UserId)
+               {
+                    return Tuple.Create(ms, comment);
+               }
+            }
+            return null;
+        }
+
+      
     }
 
 }

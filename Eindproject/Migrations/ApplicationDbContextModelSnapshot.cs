@@ -90,6 +90,37 @@ namespace Eindproject.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Eindproject.Domain.Comment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CommentId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment_Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created_Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MovieOrSerie_Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("CommentId1");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("Eindproject.Domain.Lijst", b =>
                 {
                     b.Property<int>("LijstId")
@@ -116,8 +147,8 @@ namespace Eindproject.Migrations
                         new
                         {
                             LijstId = 1,
-                            BewerktOp = new DateTime(2021, 8, 29, 15, 26, 29, 864, DateTimeKind.Local).AddTicks(3451),
-                            ToegeVoegdOp = new DateTime(2021, 8, 29, 15, 26, 29, 862, DateTimeKind.Local).AddTicks(1268)
+                            BewerktOp = new DateTime(2021, 8, 29, 14, 19, 1, 748, DateTimeKind.Local).AddTicks(8187),
+                            ToegeVoegdOp = new DateTime(2021, 8, 29, 14, 19, 1, 739, DateTimeKind.Local).AddTicks(4565)
                         });
                 });
 
@@ -402,6 +433,19 @@ namespace Eindproject.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Eindproject.Domain.Comment", b =>
+                {
+                    b.HasOne("Eindproject.Domain.Comment", null)
+                        .WithMany("OtherComments")
+                        .HasForeignKey("CommentId1");
+
+                    b.HasOne("Eindproject.Domain.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Eindproject.Domain.Lijst", b =>
                 {
                     b.HasOne("Eindproject.Domain.ApplicationUser", "User")
@@ -515,6 +559,11 @@ namespace Eindproject.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Eindproject.Domain.Comment", b =>
+                {
+                    b.Navigation("OtherComments");
                 });
 #pragma warning restore 612, 618
         }

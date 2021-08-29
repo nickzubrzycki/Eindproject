@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Eindproject.Migrations
 {
-    public partial class _ : Migration
+    public partial class FIRST : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -168,6 +168,35 @@ namespace Eindproject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    CommentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Created_Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Comment_Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MovieOrSerie_Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CommentId1 = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.CommentId);
+                    table.ForeignKey(
+                        name: "FK_Comments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comments_Comments_CommentId1",
+                        column: x => x.CommentId1,
+                        principalTable: "Comments",
+                        principalColumn: "CommentId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Lijsts",
                 columns: table => new
                 {
@@ -288,7 +317,7 @@ namespace Eindproject.Migrations
             migrationBuilder.InsertData(
                 table: "Lijsts",
                 columns: new[] { "LijstId", "BewerktOp", "ToegeVoegdOp", "UserId" },
-                values: new object[] { 1, new DateTime(2021, 8, 26, 10, 2, 53, 11, DateTimeKind.Local).AddTicks(2714), new DateTime(2021, 8, 26, 10, 2, 53, 2, DateTimeKind.Local).AddTicks(2967), null });
+                values: new object[] { 1, new DateTime(2021, 8, 29, 14, 19, 1, 748, DateTimeKind.Local).AddTicks(8187), new DateTime(2021, 8, 29, 14, 19, 1, 739, DateTimeKind.Local).AddTicks(4565), null });
 
             migrationBuilder.InsertData(
                 table: "Statuses",
@@ -343,6 +372,16 @@ namespace Eindproject.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_CommentId1",
+                table: "Comments",
+                column: "CommentId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_UserId",
+                table: "Comments",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lijsts_UserId",
@@ -401,6 +440,9 @@ namespace Eindproject.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Notifications");
