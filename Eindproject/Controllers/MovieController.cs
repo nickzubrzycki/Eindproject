@@ -105,9 +105,10 @@ namespace Eindproject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ViewFilmSerie([FromForm] MovieCommentViewModel movieCommentViewModel)
         {
-
+            
                 if(ModelState.IsValid)
                 {
+                    Console.WriteLine("dsfjlkmdf");
                     Comment comment = new Comment();
                     comment.Created_Date = DateTime.Now;
                     var user = await userManager.GetUserAsync(User);
@@ -136,6 +137,11 @@ namespace Eindproject.Controllers
   
         }
 
+        public IActionResult Edit()
+        {
+            CommentViewModel comment = new CommentViewModel();
+            return PartialView("CommentModalPartial", comment);
+        }
 
         /// <summary>
         /// Nakijken gegevens film en serie
