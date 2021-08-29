@@ -30,6 +30,8 @@ namespace Eindproject.Controllers
         private readonly HttpClient httpClient;
         private readonly ApplicationDbContext _context;
         private readonly IMovieRepository movieRepository;
+        Random rng = new Random();
+
         private readonly ICommentRepository commentRepository;
         private readonly UserManager<ApplicationUser> userManager; 
         private int itemsPerPage = 10; 
@@ -69,10 +71,20 @@ namespace Eindproject.Controllers
         /// Voeg een nieuwe Film of Serie toe
         /// </summary>
         /// <returns></returns>
-        public IActionResult Add()
+        [HttpPost]
+        public IActionResult Add([FromRoute] AllMoviesSeriesViewModel ms)
         {
-            return View();
+            var newMovie = new SerieOfFilmInLijst
+            {
+                ApiId = ms.id
+            };
+
+            _context.SerieOfFilms.Add(newMovie);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
+
 
         /// <summary>
         /// Update gegevens van film of serie
@@ -128,12 +140,53 @@ namespace Eindproject.Controllers
         {
             // Terug ophalen van films of Serie in de file
             // Voor echt Id te gaan halen en te displayen op het scherm
+            // View Al aanmaken
+            AllMoviesSeriesViewModel vm = null;
+            if(movietype == "Serie")
+            {
+                int id = GetSpecificSerieMovie("series", name);
+                string tvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
+                //openhalen via url 
+                //View vullen
+                vm = GetMovieOrSerie(tvUrl).Result;
+                vm.poster_path = base_url + file_size + vm.poster_path;
+            }
+            else
+            {
+                int id = GetSpecificSerieMovie("movies", name);
+                string movieUrl = $"3/movie/{id}?api_key={api_key}&language=en-US";
+                //openhalen via url 
+                //View vullen
+                vm = GetMovieOrSerie(movieUrl).Result;
+                vm.poster_path = base_url + file_size + vm.poster_path;
+
+            }
+            return View(vm);
+        }
+        public IActionResult ViewRandomFilmSerie()
+        {
+            // Terug ophalen van films of Serie in de file
+            // Voor echt Id te gaan halen en te displayen op het scherm
+            // View Al aanmaken
+            AllMoviesSeriesViewModel vm = null;
+            
+            int random = rng.Next(0, 10);           
+
+            if (random % 2 == 0)
             MovieCommentViewModel movieCommentViewModel = new MovieCommentViewModel();
 
 
             int Id = 0;
             if (movietype == "Serie")
             {
+                int id = GetRandomMovie("series");
+                string tvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
+                //openhalen via url 
+                //View vullen
+                vm = GetMovieOrSerie(tvUrl).Result;
+                vm.poster_path = base_url + file_size + vm.poster_path;
+                Console.WriteLine(vm.poster_path, vm.overview);
+
                 Id = GetSpecificSerieMovie("series", name);
                 string TvUrl = $"3/tv/{Id}?api_key={api_key}&language=en-US";
                  movieCommentViewModel.UserToComment = GenerateCommentsForMovie(name);
@@ -142,27 +195,48 @@ namespace Eindproject.Controllers
             }
             else
             {
+                int id = GetRandomMovie("movies");
+                string movieUrl = $"3/movie/{id}?api_key={api_key}&language=en-US";
+                //openhalen via url 
+                //View vullen
+                vm = GetMovieOrSerie(movieUrl).Result;
+
+                vm.poster_path = base_url + file_size + vm.poster_path;
+                Console.WriteLine(vm.poster_path, vm.overview);
                 Id = GetSpecificSerieMovie("movies", name);
                 string movieUrl = $"3/movie/{Id}?api_key={api_key}&language=en-US";
                 movieCommentViewModel.UserToComment = GenerateCommentsForMovie(name);
                 return View(movieCommentViewModel);
             }
-
-
-
+            return View(vm);
         }
-        
-        [Route("Movie/Delete")]
-        public IActionResult Delete(string name)
+            
+        public IActionResult Delete([FromRoute] int Id)
         {
-            Console.Write(name);
-            return View();
+            var ms = _context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id);
+
+            var vm = new MovieDeleteViewModel
+            {
+                Id = ms.ApiId,
+                Title = ms.OriginalTitle,
+                poster_path = ms.FilmUrl
+            };
+
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmDelete([FromRoute] int Id)
+        {
+            _context.SerieOfFilms.Remove(_context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id));
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Watchlist));
         }
 
         public IActionResult UnWatchlist(int counter)
         {
-
-
 
             var vm = movieRepository.GetAllMoviesNotWatched().Select(x => new AllMoviesSeriesViewModel
             {
@@ -170,8 +244,26 @@ namespace Eindproject.Controllers
                 poster_path = base_url + file_size + x.FilmUrl,
 
             });
+            List<AllMoviesSeriesViewModel[]> allMovies = new List<AllMoviesSeriesViewModel[]>();
 
-            return View(vm);
+            int totalNumberOfMovies = vm.Count();
+            int remainder = 0;
+            int quotient = 0;
+            int counterArray = 0;
+            counter = Math.Clamp(counter, 0, totalNumberOfMovies - 1);
+            Console.WriteLine(counter);
+            ViewData["Counter"] = counter;
+
+            // Aanmaken van list + Aantal van aangemaakt array te bepalen via remainder en quotient
+            allMovies = ListOfAllMoviePages(quotient, remainder, totalNumberOfMovies, allMovies);
+
+
+            // En dan op basis van wat de counter is de array meegeven via de view 
+
+            allMovies = FillInListWithItems(vm.ToList(), counterArray, allMovies);
+            ViewData["TotalPages"] = allMovies.Count();
+            var moviesAndSeries = allMovies[counter];
+            return View(moviesAndSeries);
         }
 
         public IActionResult Watchlist(int counter)
@@ -300,7 +392,7 @@ namespace Eindproject.Controllers
         /// <returns></returns>
         private List<AllMoviesSeriesViewModel[]> ListOfAllMoviePages(int quotient,
             int remainder,
-            int totalNumberOfMovies, 
+            int totalNumberOfMovies,
             List<AllMoviesSeriesViewModel[]> allMovies)
         {
             // Even getal deelbaar door 5 dus 
@@ -311,7 +403,7 @@ namespace Eindproject.Controllers
                 {
                     AllMoviesSeriesViewModel[] allMovies1 = new AllMoviesSeriesViewModel[itemsPerPage];
                     allMovies.Add(allMovies1);
-                    
+
                 }
 
                 return allMovies;
@@ -344,7 +436,7 @@ namespace Eindproject.Controllers
 
             }
         }
-        
+
         private List<AllMoviesSeriesViewModel[]> FillInListWithItems(
             List<AllMoviesSeriesViewModel> vm, int counterArray,
             List<AllMoviesSeriesViewModel[]> allMovies)
@@ -372,27 +464,24 @@ namespace Eindproject.Controllers
 
         private List<int> GetMovieOrSerieInfo(int id, string typeMovie)
         {
-            string movieUrl = $"3/movie/{id}?api_key={api_key}&language=en-US";
-            string TvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
+
             List<int> MovieInfo;
-            
 
-
-            if(typeMovie == "Serie")
+            if (typeMovie == "Serie")
             {
-                
+                string TvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
                 AllMoviesSeriesViewModel serie = MakeRequestMovieSerie(id, TvUrl).Result;
-                MovieInfo = new List<int>{ serie.number_of_episodes, serie.season_number, serie.number_of_seasons };
+                MovieInfo = new List<int> { serie.number_of_episodes, serie.season_number, serie.number_of_seasons };
                 return MovieInfo;
             }
             else
             {
-               
+                string movieUrl = $"3/movie/{id}?api_key={api_key}&language=en-US";
                 AllMoviesSeriesViewModel movie = MakeRequestMovieSerie(id, movieUrl).Result;
                 MovieInfo = new List<int> { (int)movie.runtime };
                 return MovieInfo;
             }
-            
+
         }
         /// <summary>
         /// Search for the trending Movies and Series
@@ -494,7 +583,7 @@ namespace Eindproject.Controllers
                     else
                     {
                         moviesSeriesViewModel.MovieOrSerie = "Movie";
-       
+
                     }
                     // Plak de statuscode aan de eerste object dat je meegeeft 
 
@@ -517,6 +606,60 @@ namespace Eindproject.Controllers
             return allMoviesSeriesViews;
 
         }
+        private async Task<AllMoviesSeriesViewModel> GetMovieOrSerie(string url)
+        {
+            AllMoviesSeriesViewModel moviesSeriesViewModel;
+            var response = await httpClient.GetAsync(url);
+            try
+            {
+                // Aanpassen van Get string async naar get sync
+                // Check that response was successful or throw exception
+                response.EnsureSuccessStatusCode();
+
+                // Read response asynchronously as JsonValue
+                var result = await response.Content.ReadAsStringAsync();
+                moviesSeriesViewModel = JsonConvert.DeserializeObject<AllMoviesSeriesViewModel>(result);
+
+                // Omzetten van object attributen naar MovieViewModel 
+                // Omzetten naar json file en dan mappen 
+                var json = JsonConvert.SerializeObject(moviesSeriesViewModel);
+
+                moviesSeriesViewModel = JsonConvert.DeserializeObject<AllMoviesSeriesViewModel>(json);
+                moviesSeriesViewModel.StatusCode = (int)response.StatusCode;
+                if (moviesSeriesViewModel.release_date == null)
+                {
+                    moviesSeriesViewModel.MovieOrSerie = "Serie";
+                    int Id = GetSpecificSerieMovie("series", moviesSeriesViewModel.original_name);
+                    List<int> serie = GetMovieOrSerieInfo(Id,
+                        moviesSeriesViewModel.MovieOrSerie);
+                    moviesSeriesViewModel.number_of_episodes = serie[0];
+                    moviesSeriesViewModel.season_number = serie[1];
+                    moviesSeriesViewModel.number_of_seasons = serie[2];
+                }
+                else
+                {
+                    moviesSeriesViewModel.MovieOrSerie = "Movie";
+
+                }
+                // Plak de statuscode aan de eerste object dat je meegeeft 
+
+
+                Console.WriteLine(moviesSeriesViewModel.title);
+                // Voor elke object invoegen in een list van movieobjects
+                // het ene object toevoegen 
+                return moviesSeriesViewModel;
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine(e.Message);
+                moviesSeriesViewModel = new AllMoviesSeriesViewModel();
+                moviesSeriesViewModel.StatusCode = (int)e.StatusCode;
+
+                // Handle failure
+            }
+            return moviesSeriesViewModel;
+
+        }
         /// <summary>
         /// Laten tonen als je een bepaalde error terugkrijgt van de API response  met een gepaste errorpage voor de user
         /// </summary>
@@ -532,7 +675,7 @@ namespace Eindproject.Controllers
                     return "No result found.";
                 case 500:
                     return "An error occurred in the server";
-                    
+
 
             }
             return null;
@@ -607,12 +750,12 @@ namespace Eindproject.Controllers
             };
 
             var jsonSerializer = new Newtonsoft.Json.JsonSerializer();
-            
+
             while (jsonReader.Read())
             {
                 // Search in the filename to 
                 SearchIdMovieSerie movieView = jsonSerializer.Deserialize<SearchIdMovieSerie>(jsonReader);
-                
+                //hier checken op mijn random generated id ipv title
                 if (movieView.original_title == title)
                 {
                     Console.WriteLine(movieView.id);
@@ -622,11 +765,57 @@ namespace Eindproject.Controllers
                 {
                     return movieView.id;
                 }
-
-               
             }
             return 0;
+        }
+        public int GetRandomMovie(string filename)
+        {
+            List<AllMoviesSeriesViewModel> listOfMovies = new List<AllMoviesSeriesViewModel>();
 
+            int rid = 0;
+
+            bool found = false;
+
+            string filePath = SearchFile(filename);
+            string json = string.Empty;
+
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                json = sr.ReadToEnd();
+            }
+            var jsonReader = new JsonTextReader(new StringReader(json))
+            {
+                SupportMultipleContent = true // This is important!
+            };
+
+            var jsonSerializer = new Newtonsoft.Json.JsonSerializer();
+
+        Start:
+
+            if (filename == "movies")
+            {
+                rid = rng.Next(860342);
+            }
+            else
+            {
+                rid = rng.Next(130940);
+            }
+
+            while (jsonReader.Read())
+            {
+                // Search in the filename to 
+                SearchIdMovieSerie movieView = jsonSerializer.Deserialize<SearchIdMovieSerie>(jsonReader);
+                //hier checken op mijn random generated id ipv title
+                if (movieView.id == rid)
+                {
+                    return movieView.id;
+                }
+            }
+            if (found == false)
+            {
+                goto Start;
+            }
+            return 0;
         }
         /// <summary>
         /// Zoek naar een bepaalde file voor movies of series
@@ -649,7 +838,7 @@ namespace Eindproject.Controllers
                 }
 
             }
-            
+
             return fileName;
 
 

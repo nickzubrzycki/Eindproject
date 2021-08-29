@@ -25,10 +25,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Index">Movies</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Index">Movies</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="ViewRandomFilmSerie">Suprise me</a>
                         </li>
                         <li class="nav-item" style="margin:8px 3px 0px 0px; ">
                             <div class="dropdown show">
@@ -37,11 +37,11 @@
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="WatchList">Watched</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="UnWatchList">Unwatched</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="All">All</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="Finished">Finished</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="Watching">Watching/Plan to watch</a>
                                 </div>
                             </div>
-
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />

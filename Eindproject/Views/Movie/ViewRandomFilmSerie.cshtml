@@ -1,0 +1,165 @@
+﻿@model AllMoviesSeriesViewModel
+
+@using Microsoft.AspNetCore.Identity
+@using Eindproject.Domain
+@using Eindproject.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext Data
+
+@{
+    //lijst user checken voor film id
+    var id = UserManager.GetUserId(User);
+    SerieOfFilmInLijst serieOfFilmInLijst = null;
+    var checkLijst = Data.Lijsts.FirstOrDefault(u => u.UserId == id);
+    if (checkLijst != null)
+    {
+        serieOfFilmInLijst = Data.SerieOfFilms.FirstOrDefault(u => u.LijstId == checkLijst.LijstId && u.ApiId == Model.id);
+    }
+
+}
+<div class="container">
+    <div class="row" style="min-height:min-content">
+        <div class="col-sm-8">
+            <section class="mb-3 card">
+                <div class="card-header">
+                    @if (Model.MovieOrSerie == "Movie")
+                    {
+                        <h4><strong>@Model.title</strong></h4>
+                    }
+                    else
+                    {
+                        <h4><strong>@Model.original_name</strong></h4>
+                    }
+
+                </div>
+                <div class="card-body" style="height:315px">
+                    @if (string.IsNullOrEmpty(Model.overview))
+                    {
+                        <p>We didn`t find any description for this movie</p>
+                    }
+                    else
+                    {
+                        <p>@Model.overview</p>
+                    }
+                </div>
+            </section>
+        </div>
+        <div class="col-sm-3">
+            <section class="mb-3 card">
+                @if (Model.poster_path == "https://image.tmdb.org/t/p/w500")
+                {
+                    <img src="~/img/missingImage.jpg" />
+                }
+                else
+                {
+                    <img src="@Model.poster_path" />
+                }
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            //check voor of user dit in lijst heeft steken.
+            if (serieOfFilmInLijst != null)
+            {
+                if (Model.MovieOrSerie == "Movie")
+                {
+                    <div class="col-sm-8">
+                        <section class="mb-3 card">
+
+                            <div class="card-body">
+                                @if (serieOfFilmInLijst.Status.StatusWatch == true)
+                                {
+                                    <p>Watched <a href="#">toggle watched</a></p>
+                                }
+                                else if (false)
+                                {
+                                    <p>Not watched <a href="#">toggle watched</a></p>
+                                }
+                                else
+                                {
+                                    <p class="btn btn-primary">Cant ever be null</p>
+                                }
+                            </div>
+                        </section>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-sm-4">
+                        <section class="mb-3 card">
+                            <div class="card-header">
+                                <h5><strong>Watch history</strong></h5>
+                            </div>
+
+                            <div class="card-body text-right">
+                                <p>@serieOfFilmInLijst.aantalGekekenAfleveringen / @serieOfFilmInLijst.aantalAfleveringen</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-sm-4">
+                        <section class="mb-3 card">
+                            <div class="card-header">
+                                <h5><strong>Status</strong></h5>
+                            </div>
+                            <div class="card-body text-right">
+                                @if (serieOfFilmInLijst.Status.StatusWatch == true)
+                                {
+                                    <p>Completed <a href="#">toggle watched</a></p>
+                                }
+                                else if (false)
+                                {
+                                    <p>Not Completed <a href="#">toggle watched</a></p>
+                                }
+                                else
+                                {
+                                    <p class="btn btn-primary">Cant ever be null</p>
+                                }
+                            </div>
+                        </section>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-sm-8">
+                    <section class="mb-3 card">
+                        <div class="card-header">
+                            <h5><strong>Watch history</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="btn btn-primary">Add to list</p>
+                        </div>
+                    </section>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-sm-8">
+                <section class="mb-3 card">
+
+                    <div class="card-body">
+                        <p><a asp-area="Identity" asp-page="/Account/Login">Login</a> or <a asp-area="Identity" asp-page="/Account/Register">Register</a> to access lists</p>
+                    </div>
+                </section>
+            </div>
+        }
+        <div class="col-sm-3">
+            <section class="mb-3 card">
+                <div class="card-header">
+                    <h5><strong>Score</strong></h5>
+                </div>
+                <div class="card-body text-right">
+                    <p>@Model.vote_average / 10</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
