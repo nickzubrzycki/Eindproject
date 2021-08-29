@@ -15,7 +15,7 @@
     {
         serieOfFilmInLijst = Data.SerieOfFilms.FirstOrDefault(u => u.LijstId == checkLijst.LijstId && u.ApiId == Model.id);
     }
-    Model.LoggedInUserName = User.Identity.Name;
+
     string title = string.Empty;
 
     if (Model.MovieOrSerie == "Movie")
@@ -358,16 +358,5 @@
     });
 
 
-    $(document).ready(function () {
-        var PlaceHolderElement = $('#EditComment');
-        $('button[data-toggle="ajax-modal"]').click(function () {
-            var url = $(this).data('url');
-            $.get(url).done(function (data) {
-                PlaceHolderElement.html(data);
-                PlaceHolderElement.find('.modal').modal('show');
-
-            })
-
-        });
-    });
+   
 </script>
