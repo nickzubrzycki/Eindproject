@@ -11,7 +11,7 @@ namespace Eindproject.Models
     {
         public Dictionary<ApplicationUser, Comment>  UserToComment { get; set; }
 
-        [Required]
+        [Required("You need to fill in a message before posting anything")]
         public string message { get; set; }
         [Required]
         public string LoggedInUserName { get; set; }
