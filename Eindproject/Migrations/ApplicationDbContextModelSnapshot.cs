@@ -4,16 +4,14 @@ using Eindproject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Eindproject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210827122516_Commentsection")]
-    partial class Commentsection
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,6 +97,9 @@ namespace Eindproject.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("CommentId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comment_Message")
                         .HasColumnType("nvarchar(max)");
 
@@ -112,6 +113,8 @@ namespace Eindproject.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("CommentId");
+
+                    b.HasIndex("CommentId1");
 
                     b.HasIndex("UserId");
 
@@ -144,8 +147,8 @@ namespace Eindproject.Migrations
                         new
                         {
                             LijstId = 1,
-                            BewerktOp = new DateTime(2021, 8, 27, 14, 25, 15, 829, DateTimeKind.Local).AddTicks(3847),
-                            ToegeVoegdOp = new DateTime(2021, 8, 27, 14, 25, 15, 820, DateTimeKind.Local).AddTicks(9344)
+                            BewerktOp = new DateTime(2021, 8, 29, 14, 19, 1, 748, DateTimeKind.Local).AddTicks(8187),
+                            ToegeVoegdOp = new DateTime(2021, 8, 29, 14, 19, 1, 739, DateTimeKind.Local).AddTicks(4565)
                         });
                 });
 
@@ -432,6 +435,10 @@ namespace Eindproject.Migrations
 
             modelBuilder.Entity("Eindproject.Domain.Comment", b =>
                 {
+                    b.HasOne("Eindproject.Domain.Comment", null)
+                        .WithMany("OtherComments")
+                        .HasForeignKey("CommentId1");
+
                     b.HasOne("Eindproject.Domain.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -552,6 +559,11 @@ namespace Eindproject.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Eindproject.Domain.Comment", b =>
+                {
+                    b.Navigation("OtherComments");
                 });
 #pragma warning restore 612, 618
         }

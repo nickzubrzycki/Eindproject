@@ -1,10 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Eindproject.Domain
+@using Eindproject.Data
 
 @model MovieCommentViewModel
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@inject ApplicationDbContext Data
 @{
+    //lijst user checken voor film id
+    var id = UserManager.GetUserId(User);
+    SerieOfFilmInLijst serieOfFilmInLijst = null;
+    var checkLijst = Data.Lijsts.FirstOrDefault(u => u.UserId == id);
+    if (checkLijst != null)
+    {
+        serieOfFilmInLijst = Data.SerieOfFilms.FirstOrDefault(u => u.LijstId == checkLijst.LijstId && u.ApiId == Model.id);
+    }
     Model.LoggedInUserName = User.Identity.Name;
     string title = string.Empty;
 
@@ -18,27 +28,9 @@
     }
 
 }
-@model AllMoviesSeriesViewModel
 
-@using Microsoft.AspNetCore.Identity
-@using Eindproject.Domain
-@using Eindproject.Data
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@inject ApplicationDbContext Data
 
-@{
-    //lijst user checken voor film id
-    var id = UserManager.GetUserId(User);
-    SerieOfFilmInLijst serieOfFilmInLijst = null;
-    var checkLijst = Data.Lijsts.FirstOrDefault(u => u.UserId == id);
-    if (checkLijst != null)
-    {
-        serieOfFilmInLijst = Data.SerieOfFilms.FirstOrDefault(u => u.LijstId == checkLijst.LijstId && u.ApiId == Model.id);
-    }
-
-}
 <div class="container">
     <div class="row" style="min-height:min-content">
         <div class="col-sm-8">
@@ -46,11 +38,11 @@
                 <div class="card-header">
                     @if (Model.MovieOrSerie == "Movie")
                     {
-                        <h4><strong>@Model.title</strong></h4>
+                    <h4><strong>@Model.title</strong></h4>
                     }
                     else
                     {
-                        <h4><strong>@Model.original_name</strong></h4>
+                    <h4><strong>@Model.original_name</strong></h4>
                     }
 
                 </div>
@@ -77,86 +69,86 @@
             {
                 if (Model.MovieOrSerie == "Movie")
                 {
-                    <div class="col-sm-8">
-                        <section class="mb-3 card">
+        <div class="col-sm-8">
+            <section class="mb-3 card">
 
-                            <div class="card-body">
-                                @if (serieOfFilmInLijst.Status.StatusWatch == true)
+                <div class="card-body">
+                    @if (serieOfFilmInLijst.Status.StatusWatch == true)
                                 {
-                                    <p>Watched <a href="#">toggle watched</a></p>
+                    <p>Watched <a href="#">toggle watched</a></p>
                                 }
                                 else if (false)
                                 {
-                                    <p>Not watched <a href="#">toggle watched</a></p>
+                    <p>Not watched <a href="#">toggle watched</a></p>
                                 }
                                 else
                                 {
-                                    <p class="btn btn-primary">Cant ever be null</p>
+                    <p class="btn btn-primary">Cant ever be null</p>
                                 }
-                            </div>
-                        </section>
-                    </div>
+                </div>
+            </section>
+        </div>
                 }
                 else
                 {
-                    <div class="col-sm-4">
-                        <section class="mb-3 card">
-                            <div class="card-header">
-                                <h5><strong>Watch history</strong></h5>
-                            </div>
+        <div class="col-sm-4">
+            <section class="mb-3 card">
+                <div class="card-header">
+                    <h5><strong>Watch history</strong></h5>
+                </div>
 
-                            <div class="card-body text-right">
-                                <p>@serieOfFilmInLijst.aantalGekekenAfleveringen / @serieOfFilmInLijst.aantalAfleveringen</p>
-                            </div>
-                        </section>
-                    </div>
-                    <div class="col-sm-4">
-                        <section class="mb-3 card">
-                            <div class="card-header">
-                                <h5><strong>Status</strong></h5>
-                            </div>
-                            <div class="card-body text-right">
-                                @if (serieOfFilmInLijst.Status.StatusWatch == true)
+                <div class="card-body text-right">
+                    <p>@serieOfFilmInLijst.aantalGekekenAfleveringen / @serieOfFilmInLijst.aantalAfleveringen</p>
+                </div>
+            </section>
+        </div>
+        <div class="col-sm-4">
+            <section class="mb-3 card">
+                <div class="card-header">
+                    <h5><strong>Status</strong></h5>
+                </div>
+                <div class="card-body text-right">
+                    @if (serieOfFilmInLijst.Status.StatusWatch == true)
                                 {
-                                    <p>Completed <a href="#">toggle watched</a></p>
+                    <p>Completed <a href="#">toggle watched</a></p>
                                 }
                                 else if (false)
                                 {
-                                    <p>Not Completed <a href="#">toggle watched</a></p>
+                    <p>Not Completed <a href="#">toggle watched</a></p>
                                 }
                                 else
                                 {
-                                    <p class="btn btn-primary">Cant ever be null</p>
+                    <p class="btn btn-primary">Cant ever be null</p>
                                 }
-                            </div>
-                        </section>
-                    </div>
+                </div>
+            </section>
+        </div>
                 }
             }
             else
             {
-                <div class="col-sm-8">
-                    <section class="mb-3 card">
-                        <div class="card-header">
-                            <h5><strong>Watch history</strong></h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="btn btn-primary">Add to list</p>
-                        </div>
-                    </section>
+        <div class="col-sm-8">
+            <section class="mb-3 card">
+                <div class="card-header">
+                    <h5><strong>Watch history</strong></h5>
                 </div>
+                <div class="card-body">
+                    <p class="btn btn-primary">Add to list</p>
+                </div>
+            </section>
+        </div>
             }
         }
         else
         {
-            <div class="col-sm-8">
-                <section class="mb-3 card">
+        <div class="col-sm-8">
+            <section class="mb-3 card">
 
-                    <div class="card-body">
-                        <p><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a> or <a asp-area="Identity" asp-page="/Account/Register">Register</a> to access lists</p>
-                    </div>
-                </section>
-            </div>
+                <div class="card-body">
+                    <p><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a> or <a asp-area="Identity" asp-page="/Account/Register">Register</a> to access lists</p>
+                </div>
+            </section>
+        </div>
         }
         <div class="col-sm-3">
             <section class="mb-3 card">
@@ -180,79 +172,79 @@
                     <div class="col-md-12">
                         @if (Model.UserToComment != null && Model.UserToComment.Count() != 0 && SignInManager.IsSignedIn(User))
                         {
-                            @foreach (var comment in Model.UserToComment)
+                        @foreach (var comment in Model.UserToComment)
                             {
-                                <div class="media">
-                                    <a class="pr-3" href="#"><img class="rounded-circle" alt="Bootstrap Media Another Preview" src="https://i.imgur.com/xELPaag.jpg" /></a>
-                                    <div class="media-body">
-                                        <div class="row">
-                                            <div class="col-12 d-flex">
-                                                <h5>@comment.Key.Voornaam @comment.Key.Achternaam</h5>
-                                                @if (comment.Value.Created_Date.Date == DateTime.Now.Date)
+                        <div class="media">
+                            <a class="pr-3" href="#"><img class="rounded-circle" alt="Bootstrap Media Another Preview" src="https://i.imgur.com/xELPaag.jpg" /></a>
+                            <div class="media-body">
+                                <div class="row">
+                                    <div class="col-12 d-flex">
+                                        <h5>@comment.Key.Voornaam @comment.Key.Achternaam</h5>
+                                        @if (comment.Value.Created_Date.Date == DateTime.Now.Date)
                                                 {
-                                                    <span> @comment.Value.Created_Date.ToString("hh:mm") </span>
+                                        <span> @comment.Value.Created_Date.ToString("hh:mm") </span>
                                                 }
                                                 else
                                                 {
-                                                    <span> @comment.Value.Created_Date </span>
+                                        <span> @comment.Value.Created_Date </span>
                                                 }
-                                            </div>
-                                        </div> @comment.Value.Comment_Message
                                     </div>
-                                    <div class="d-flex justify-content-end align-items-center comment-buttons mt-2 text-right"><span class="mr-3 delete" data-toggle="modal" data-target="#exampleModalLong">Delete</span><button class="btn btn-success btn-sm border-0 px-3" type="button" data-toggle="ajax-modal" id="EditCommment" data-target="#EditComment" data-url="@Url.Action("Edit", new { comment})">Edit</button></div>
-                                    <div class="bg-white p-2">
-                                        <div class="d-flex flex-row fs-12">
-                                            <div class="like p-2 cursor"><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span></div>
-                                            <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-1" href="#collapse-1"><i class="fa fa-commenting-o"></i><span class="ml-1">Comment</span></div>
-                                            <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-2" href="#collapse-2"><i class="fa fa-share"></i><span class="ml-1">Share</span></div>
-                                        </div>
-                                    </div>
-                                    <div id="collapse-1" class="bg-light p-2 collapse" data-parent="#myGroup">
-                                        <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div>
-                                        <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
-                                    </div>
-                                    <div id="collapse-2" class="bg-light p-2 collapse" data-parent="#myGroup">
-                                        <div class="d-flex flex-row align-items-start"><i class="fa fa-facebook border p-3 rounded mr-1"></i><i class="fa fa-twitter border p-3 rounded mr-1"></i><i class="fa fa-linkedin border p-3 rounded mr-1"></i><i class="fa fa-instagram border p-3 rounded mr-1"></i><i class="fa fa-dribbble border p-3 rounded mr-1"></i> <i class="fa fa-pinterest-p border p-3 rounded mr-1"></i> </div>
-                                    </div>
+                                </div> @comment.Value.Comment_Message
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center comment-buttons mt-2 text-right"><span class="mr-3 delete" data-toggle="modal" data-target="#exampleModalLong">Delete</span><button class="btn btn-success btn-sm border-0 px-3" type="button" data-toggle="ajax-modal" id="EditCommment" data-target="#EditComment" data-url="@Url.Action("Edit", new { comment})">Edit</button></div>
+                            <div class="bg-white p-2">
+                                <div class="d-flex flex-row fs-12">
+                                    <div class="like p-2 cursor"><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span></div>
+                                    <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-1" href="#collapse-1"><i class="fa fa-commenting-o"></i><span class="ml-1">Comment</span></div>
+                                    <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-2" href="#collapse-2"><i class="fa fa-share"></i><span class="ml-1">Share</span></div>
                                 </div>
-                                <div id="collapse-1" class="bg-light p-2 collapse" data-parent="#myGroup">
-                                    <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div>
-                                    <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
-                                </div>
+                            </div>
+                            <div id="collapse-1" class="bg-light p-2 collapse" data-parent="#myGroup">
+                                <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div>
+                                <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                            </div>
+                            <div id="collapse-2" class="bg-light p-2 collapse" data-parent="#myGroup">
+                                <div class="d-flex flex-row align-items-start"><i class="fa fa-facebook border p-3 rounded mr-1"></i><i class="fa fa-twitter border p-3 rounded mr-1"></i><i class="fa fa-linkedin border p-3 rounded mr-1"></i><i class="fa fa-instagram border p-3 rounded mr-1"></i><i class="fa fa-dribbble border p-3 rounded mr-1"></i> <i class="fa fa-pinterest-p border p-3 rounded mr-1"></i> </div>
+                            </div>
+                        </div>
+                        <div id="collapse-1" class="bg-light p-2 collapse" data-parent="#myGroup">
+                            <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div>
+                            <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                        </div>
 
 
-                            }
+                        }
 
 
 
                         }
                         else if (true)
                         {
-                            <form method="post" asp-controller="Movie" asp-action="ViewFilmSerie">
-                                <div class="bg-light p-2 " data-parent="#myGroup">
-                                    <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea asp-for="@Model.message" class="form-control ml-1 shadow-none textarea"></textarea></div>
-                                    <span asp-validation-for="message" class="text-danger"></span>
-                                    <div class="mt-2 text-right"><input type="submit" value="Post comment" class="btn btn-primary btn-sm shadow-none" /><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
-                                </div>
-                            </form>
-                               
-                            
-                            
+                        <form method="post" asp-controller="Movie" asp-action="ViewFilmSerie">
+                            <div class="bg-light p-2 " data-parent="#myGroup">
+                                <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea asp-for="@Model.message" class="form-control ml-1 shadow-none textarea"></textarea></div>
+                                <span asp-validation-for="message" class="text-danger"></span>
+                                <div class="mt-2 text-right"><input type="submit" value="Post comment" class="btn btn-primary btn-sm shadow-none" /><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                            </div>
+                        </form>
+
+
+
 
                         }
 
                         else
                         {
 
-                            <form method="post">
-                                <h3>There are no comments for this @Model.MovieOrSerie yet</h3>
+                        <form method="post">
+                            <h3>There are no comments for this @Model.MovieOrSerie yet</h3>
 
                             <div class="p-3 bg-white mt-2 rounded text-center">
                                 <h5>Join the community to comment</h5><a class="btn btn-success btn-sm px-3" type="button" asp-controller="Movie" asp-action="Delete" asp-route-name=@User.Identity.Name>Signup</a>
                             </div>
 
-                            </form>
-                            
+                        </form>
+
                         }
 
 
@@ -356,9 +348,9 @@
     }
 </style>
 <script>
-$('#myModal').on('shown.bs.modal', function () {
+    $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')
-});
+    });
 
 
     $(document).ready(function () {
@@ -370,7 +362,7 @@ $('#myModal').on('shown.bs.modal', function () {
                 PlaceHolderElement.find('.modal').modal('show');
 
             })
-           
+
         });
     });
 </script>
