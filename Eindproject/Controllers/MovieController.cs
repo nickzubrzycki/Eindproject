@@ -141,7 +141,8 @@ namespace Eindproject.Controllers
             // Terug ophalen van films of Serie in de file
             // Voor echt Id te gaan halen en te displayen op het scherm
             // View Al aanmaken
-            AllMoviesSeriesViewModel vm = null;
+            MovieCommentViewModel vm = null;
+         
             if(movietype == "Serie")
             {
                 int id = GetSpecificSerieMovie("series", name);
@@ -161,6 +162,8 @@ namespace Eindproject.Controllers
                 vm.poster_path = base_url + file_size + vm.poster_path;
 
             }
+            //Omzetten naar een andere viewmodel
+            
             return View(vm);
         }
         public IActionResult ViewRandomFilmSerie()
@@ -600,9 +603,9 @@ namespace Eindproject.Controllers
             return allMoviesSeriesViews;
 
         }
-        private async Task<AllMoviesSeriesViewModel> GetMovieOrSerie(string url)
+        private async Task<MovieCommentViewModel> GetMovieOrSerie(string url)
         {
-            AllMoviesSeriesViewModel moviesSeriesViewModel;
+            MovieCommentViewModel moviesSeriesViewModel;
             var response = await httpClient.GetAsync(url);
             try
             {
@@ -612,13 +615,13 @@ namespace Eindproject.Controllers
 
                 // Read response asynchronously as JsonValue
                 var result = await response.Content.ReadAsStringAsync();
-                moviesSeriesViewModel = JsonConvert.DeserializeObject<AllMoviesSeriesViewModel>(result);
+                moviesSeriesViewModel = JsonConvert.DeserializeObject<MovieCommentViewModel>(result);
 
                 // Omzetten van object attributen naar MovieViewModel 
                 // Omzetten naar json file en dan mappen 
                 var json = JsonConvert.SerializeObject(moviesSeriesViewModel);
 
-                moviesSeriesViewModel = JsonConvert.DeserializeObject<AllMoviesSeriesViewModel>(json);
+                moviesSeriesViewModel = JsonConvert.DeserializeObject<MovieCommentViewModel>(json);
                 moviesSeriesViewModel.StatusCode = (int)response.StatusCode;
                 if (moviesSeriesViewModel.release_date == null)
                 {
@@ -646,7 +649,7 @@ namespace Eindproject.Controllers
             catch (HttpRequestException e)
             {
                 Console.WriteLine(e.Message);
-                moviesSeriesViewModel = new AllMoviesSeriesViewModel();
+                moviesSeriesViewModel = new MovieCommentViewModel();
                 moviesSeriesViewModel.StatusCode = (int)e.StatusCode;
 
                 // Handle failure

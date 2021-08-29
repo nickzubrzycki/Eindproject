@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eindproject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210827175156_geupdatedComment")]
-    partial class geupdatedComment
+    [Migration("20210829121902_FIRST")]
+    partial class FIRST
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -149,8 +149,8 @@ namespace Eindproject.Migrations
                         new
                         {
                             LijstId = 1,
-                            BewerktOp = new DateTime(2021, 8, 27, 19, 51, 54, 859, DateTimeKind.Local).AddTicks(6256),
-                            ToegeVoegdOp = new DateTime(2021, 8, 27, 19, 51, 54, 842, DateTimeKind.Local).AddTicks(9448)
+                            BewerktOp = new DateTime(2021, 8, 29, 14, 19, 1, 748, DateTimeKind.Local).AddTicks(8187),
+                            ToegeVoegdOp = new DateTime(2021, 8, 29, 14, 19, 1, 739, DateTimeKind.Local).AddTicks(4565)
                         });
                 });
 
