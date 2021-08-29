@@ -113,10 +113,15 @@ namespace Eindproject.Controllers
             // Voor echt Id te gaan halen en te displayen op het scherm
             // View Al aanmaken
             AllMoviesSeriesViewModel vm = null;
+            string movietype = "Movie";
             
-            int random = rng.Next(0, 10);           
+            int random = rng.Next(0, 10);
 
             if (random % 2 == 0)
+                movietype = "Serie";
+
+
+            if (movietype == "Serie")
             {
                 int id = GetRandomMovie("series");
                 string tvUrl = $"3/tv/{id}?api_key={api_key}&language=en-US";
@@ -126,6 +131,8 @@ namespace Eindproject.Controllers
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
 
+  
+                return View(vm);
             }
             else
             {
@@ -137,8 +144,9 @@ namespace Eindproject.Controllers
 
                 vm.poster_path = base_url + file_size + vm.poster_path;
                 Console.WriteLine(vm.poster_path, vm.overview);
+                return View(vm);
             }
-            return View(vm);
+        
         }
             
         public IActionResult Delete([FromRoute] int Id)
