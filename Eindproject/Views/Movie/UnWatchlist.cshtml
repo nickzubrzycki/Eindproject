@@ -1,13 +1,9 @@
-﻿@model AllMoviesSeriesViewModel[]
+﻿@model IEnumerable<AllMoviesSeriesViewModel>
 @*
 
 
 *@
 @{
-    int totalPages = (int)ViewData["TotalPages"];
-    int counter = (int)ViewData["Counter"];
-    int prevMovies = counter - 1;
-    int nextMovies = counter + 1;
 
 }
 
@@ -48,21 +44,7 @@ else
     </div>
 
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@prevMovies">Previous </a></li>
-            @for (int i = 0; i < totalPages; i++)
-            {
-                <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@i">@i</a></li>
-            }
-            <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@nextMovies">Next </a></li>
-        </ul>
-    </nav>
-
-
-    <span> - </span>
-
-    <a asp-controller="movie" asp-action="SeeAllMovies">See All Movies</a>
+ 
 
 }
 

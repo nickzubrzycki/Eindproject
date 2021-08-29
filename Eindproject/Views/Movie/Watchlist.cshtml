@@ -1,13 +1,10 @@
-﻿@model AllMoviesSeriesViewModel[]
+﻿@model IEnumerable<AllMoviesSeriesViewModel>
 @*
 
 
 *@
 @{
 
-    int counter = (int)ViewData["Counter"];
-    int prevMovies = counter - 1;
-    int nextMovies = counter + 1;
 
 }
 
@@ -47,13 +44,6 @@ else
         }
 
     </div>
-
-    <p>
-        <a asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@prevMovies">Previous movies</a>
-        <span> - </span>
-        <a asp-controller="movie" asp-action="UnWatchlist" asp-route-counter="@nextMovies">Next movies</a>
-        <a asp-controller="movie" asp-action="SeeAllMovies">See All Movies</a>
-    </p>
 
 
 }

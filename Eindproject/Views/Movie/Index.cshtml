@@ -1,63 +1,46 @@
-﻿@model IEnumerable<AllMoviesSeriesViewModel>
-
+﻿@model IEnumerable<AllMoviesSeriesViewModel[]>
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
     // Hoe kan hij weten voor welke section dat hij die lijst moet gebruiken?
-    // 
+    // Ik kan een array maken van list die elk verbonden is aan een bepaalde componenten.
+    // Elke methode verstuurd dan een array terug en op het einde samenvoegen
+    var moviesNotReleased = Model.ToList()[1];
+    var moviesMostPopular = Model.ToList()[2];
+    var moviesTrending = Model.ToList()[0];
+
+    string baseUrl = (string)ViewData["Base"];
+    string fileSize = (string)ViewData["File"];
+
+
 
 }
 
 <!--Carousel for the movies who haven't been released'-->
-<section class="moviesNotRealeased">
+<!--Popular Movies in a Horizontal Slider-->
+<section class="moviesNotReleased">
     <div class="container-fluid">
+        <h1>Coming Next</h1>
+        <p>2022 looks like it's going to be a good year to hit the cinema again!</p>
         <div class="row">
+
             <div class="scrollcards">
 
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
+                @foreach (var ms in moviesNotReleased)
+                {
+                    <div class="card">
+                        <img class="card-img-top" src="@baseUrl@fileSize@ms.poster_path">
+                        <div class="card-block">
+                            <h4 class="card-title flex-nowrap" style="overflow: hidden;">@ms.original_title</h4>
+                            <p class="card-text limitedP">@ms.overview</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary buttonMovie">See Movie</a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
+                }
 
 
             </div>
@@ -68,52 +51,27 @@
 <!--Popular Movies in a Horizontal Slider-->
 <section class="moviesPopular">
     <div class="container-fluid">
+        <h1>Most Popular Movies</h1>
+        <p>These are all the most popular movies in the cinema right now</p>
         <div class="row">
+
             <div class="scrollcards">
 
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
+                @foreach (var ms in moviesMostPopular)
+                {
+                    <div class="card">
+                        <img class="card-img-top" src="@baseUrl@fileSize@ms.poster_path">
+                        <div class="card-block">
+                            <h4 class="card-title ">@ms.original_title</h4>
+                            <h5 style="display:block; background-color:aqua; width:35px; height:25px; text-align:center">@ms.vote_average</h5>
+                            <p class="card-text limitedP">@ms.overview</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary buttonMovie">See Movie</a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
+                }
 
 
             </div>
@@ -127,58 +85,38 @@
 
 <section class="TrendingMovies">
     <div class="container-fluid">
+        <h1>Trending Movies</h1>
+        <p>These are the most trending movies and series at the moment on tv</p>
         <div class="row">
+
             <div class="scrollcards">
+                @foreach (var ms in moviesTrending)
+                {
+                    <div class="card">
+                        <img class="card-img-top" src="@baseUrl@fileSize@ms.poster_path">
+                        <div class="card-block">
+                            <h4 class="card-title flex-wrap">@ms.original_title</h4>
+                            <h5 style="display:block; background-color:aqua; width:35px; height:25px; text-align:center">@ms.vote_average</h5>
+                            <p class="card-text limitedP">@ms.overview</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary buttonMovie">See Movie</a>
+                        </div>
+                    </div>
 
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img class="card-img-top" src="http://via.placeholder.com/350x150">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <p class="card-text">Text Here</p>
-                    </div>
-                </div>
+                }
 
 
             </div>
         </div>
     </div>
 </section>
+
+<!--The latest trailer-->
+<section>
+</section>
+
+
 <style>
 
     section {
@@ -186,7 +124,7 @@
     }
 
     .card {
-        border: 2px solid red;
+        border: 1px solid #bacdd8;
         margin: 10px 4px;
         transition: .6s ease;
     }
@@ -205,10 +143,38 @@
         white-space: nowrap;
     }
 
+    /* Style button element */
+    .buttonMovie {
+        border: none;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: #0077ff;
+        background-color: #e0efff;
+        /* Button is inline-block element by default, it need to have block display for margin: 0 auto; to work */
+        margin: 0 auto;
+        display: block;
+        /* Button is a clickable element, therefore it should have a pointer cursor */
+        cursor: pointer;
+    }
+
+        .buttonMovie:focus,
+        .buttonMovie:hover {
+            background-color: #0077ff;
+            color: #e0efff;
+        }
+
     ::-webkit-scrollbar {
-        width: 0px;
-        height: 0px;
-        background: transparent;
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #4e4e4e;
+        border-radius: 25px;
     }
 
     div.scrollcards .card {
@@ -219,7 +185,16 @@
         width: 300px;
     }
 
+    .limitedP {
+        width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        color: #7f8c9b;
+        line-height: 150%;
+    }
 </style>
 <script>
-   
+
 </script>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AllMoviesSeriesViewModel>
+﻿@model AllMoviesSeriesViewModel[]
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,11 +10,14 @@
     string baseUrl = (string)ViewData["Base"];
     string fileSize = (string)ViewData["File"];
     string Keyword = (string)ViewData["search"];
-    //Als er een runtime is dan is het een film 
+    //Als er een runtime is dan is het een film
 
-
+    int totalPages = (int)ViewData["TotalPages"];
+    int counter = (int)ViewData["Counter"];
+    int prevMovies = counter - 1;
+    int nextMovies = counter + 1;
     List<int> infoMovieSerie = new List<int>();
-    
+
 
 
 
@@ -29,67 +32,84 @@
 <h2 class="w-25" color:#fff;">@Keyword</h2>
 
 
-@if (!Model.Any())
+@if (Model[0] == null)
 {
     <h2 class="text-capitalize font-weight-bold container" style="text-align:left; padding-right:4px;">Not Result Found</h2>
 }
 else
 {
 
-<div class="card-deck">
-    @foreach (var ms in Model)
-    {
-        
-        <div class="col-sm-6 col-lg-4 mb-3">
-            <div class="card mb-3">
-                <img src="@baseUrl@fileSize@ms.poster_path"
-                     class="card-img-top"
-                     alt="..." />
-                <div class="card-body  text-center">
-                    <div class="d-flex bg-dark text-white">
-                        <div class="p-2  flex-fill alert-info">@ms.vote_average</div>
-                        @if (ms.MovieOrSerie == "Movie")
-                        {
-                            <div class="p-2  flex-fill">@ms.release_date.Value.Year</div>
+    <div class="card-deck">
+        @foreach (var ms in Model)
+        {
 
-                        }
-                        else
-                        {
-                            <div class="p-2  flex-fill">Total Seasons: @ms.number_of_seasons</div>
-                            <div class="p-2  flex-fill">Episodes: @ms.number_of_episodes</div>
+            <div class="col-sm-6 col-lg-4 mb-3">
+                <div class="card mb-3">
+                    <img src="@baseUrl@fileSize@ms.poster_path"
+                         class="card-img-top"
+                         alt="..." />
+                    <div class="card-body  text-center">
+                        <div class="d-flex bg-dark text-white">
+                            <div class="p-2  flex-fill alert-info">@ms.vote_average</div>
+                            @if (ms.MovieOrSerie == "Movie")
+                            {
+                                <div class="p-2  flex-fill">@ms.release_date.Value.Year</div>
 
-                        }
+                            }
+                            else
+                            {
+                                <div class="p-2  flex-fill">Total Seasons: @ms.number_of_seasons</div>
+                                <div class="p-2  flex-fill">Episodes: @ms.number_of_episodes</div>
+                            }
 
+                        </div>
+                        <p class="card-text" style="height:128px">
+                            @*max char is 200*@
+                            @if (ms.overview.Length <= 200)
+                            {
+                                @ms.overview
+                            }
+                            else
+                            {
+                                @ms.overview.Substring(0, 200)<span>...</span>
+                            }
+                        </p>
                     </div>
-                    <p class="card-text" style="height:128px">
-                        @*max char is 200*@
-                        @if (ms.overview.Length <= 200)
-                        {
-                            @ms.overview
-                        }
-                        else
-                        {
-                            @ms.overview.Substring(0, 200)<span>...</span>
-                        }
+                    @if (ms.MovieOrSerie == "Movie")
+                    {
+                        <div class="card-footer text-center">
+                            <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Movie</a>
+                        </div>
 
-                    </p>
+                    }
+                    else if (ms.MovieOrSerie == "Serie")
+                    {
+                        <div class="card-footer text-center">
+                            <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_name" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Serie</a>
+                        </div>
+                    }
+
+
                 </div>
-                @if (ms.MovieOrSerie == "Movie")
-                {
-                    <div class="card-footer text-center">
-                        <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_title" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Movie</a>
-                    </div> 
-                }
-                else if (ms.MovieOrSerie == "Serie")
-                {
-                    <div class="card-footer text-center">
-                        <a asp-controller="movie" asp-action="ViewFilmSerie" asp-route-name="@ms.original_name" asp-route-movietype="@ms.MovieOrSerie" class="btn btn-primary">See Serie</a>
-                    </div>
-                }
             </div>
-        </div>        
-    }
-</div>
+
+
+        }
+    </div>
+
+    <p>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="search" asp-route-search="@Keyword" asp-route-counter="@prevMovies">Previous </a></li>
+                @for (int i = 1; i < totalPages; i++)
+                {
+                    <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="search" asp-route-search="@Keyword" asp-route-counter="@i">@i</a></li>
+                }
+                <li class="page-item"><a class="page-link" asp-controller="movie" asp-action="search" asp-route-search="@Keyword" asp-route-counter="@nextMovies">Next </a></li>
+            </ul>
+        </nav>
+    </p>
+
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -118,6 +138,6 @@ else
     // Ik heb een trigger nodig die de Ajax call doet
     //
 
- 
-    
+
+
 </script>
