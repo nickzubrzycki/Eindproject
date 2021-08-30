@@ -85,10 +85,7 @@ namespace Eindproject
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllerRoute(
-                    name: "default1",
-                    pattern: "{controller=Comment}/{action=Add}/{message?}");
+                    pattern: "{controller=Movie}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
 

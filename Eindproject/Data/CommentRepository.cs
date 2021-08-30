@@ -21,7 +21,8 @@ namespace Eindproject.Data
 
         public void DeleteComment(int CommentId)
         {
-            applicationDbContext.Comments.Where(c => c.CommentId == CommentId).SingleOrDefault();
+            var comment  = applicationDbContext.Comments.Where(c => c.CommentId == CommentId).SingleOrDefault();
+            applicationDbContext.Comments.Remove(comment);
             Save();
         }
 
@@ -41,6 +42,11 @@ namespace Eindproject.Data
             applicationDbContext.Comments.Update(comment);
             Save();
         }
+
+        public Comment GetComment(int id)
+        {
+            return applicationDbContext.Comments.Find(id);
+        }
     }
 
     public interface ICommentRepository
@@ -50,7 +56,7 @@ namespace Eindproject.Data
         void DeleteComment(int CommentId);
 
         void UpdateComment(Comment comment);
-
+        Comment GetComment(int id);
         void AddComment(Comment comment);
         void Save();
         

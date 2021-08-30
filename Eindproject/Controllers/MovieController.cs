@@ -33,6 +33,19 @@ namespace Eindproject.Controllers
         private static MovieCommentViewModel MovieComment;
         Random rng = new Random();
 
+        //Id's zijn hardcoded => komen van api moviedb.org genres
+        private readonly Dictionary<string, int> allGenresMovies =
+            new Dictionary<string, int>() 
+            { {"Action", 28},
+              {"Adventure", 12 },
+              {"Animation", 16},
+              {"Horror", 27 },
+              { "Fantasy", 14},
+              { "Romance", 10749 },
+              { "Science Fiction", 878}
+            };
+
+
         private readonly ICommentRepository commentRepository;
         private readonly UserManager<ApplicationUser> userManager; 
         private int itemsPerPage = 10; 
@@ -110,7 +123,7 @@ namespace Eindproject.Controllers
 
         /// <summary>
         /// Post a new Comment from the user on the movie
-        /// </summary>
+        /// </summary>sdfqdfs
         /// <param name="movieCommentViewModel"></param>
         /// <returns></returns>
         [HttpPost]
@@ -119,6 +132,7 @@ namespace Eindproject.Controllers
         {
                 if(ModelState.IsValid)
                 {
+                    Console.WriteLine("dsfjlkmdf");
                     Comment comment = new Comment();
                     comment.Created_Date = DateTime.Now;
                     var user = await userManager.GetUserAsync(User);
@@ -140,6 +154,65 @@ namespace Eindproject.Controllers
             //Zorgen dat als ik een view terug geef
             return View(MovieComment);  
         }
+        /// <summary>
+        /// Edit comment from User with a modal
+        /// </summary>
+        /// <param name="CommentId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Edit(int CommentId)
+        {
+            var comment = commentRepository.GetComment(CommentId);
+            CommentViewModel commentView = new CommentViewModel();
+            commentView.Comment_Id = CommentId;
+            commentView.Comment_Message = comment.Comment_Message;
+            commentView.Created_Date = comment.Created_Date;
+            return PartialView("CommentModalPartial", commentView);
+        }
+
+        /// <summary>
+        /// Post new Comment to database
+        /// </summary>
+        /// <param name="Comment_Id"></param>
+        /// <param name="Comment_Message"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int Comment_Id, string Comment_Message)
+        {
+            Comment comment = commentRepository.GetComment(Comment_Id);
+            comment.Comment_Message = Comment_Message;
+            comment.Created_Date = DateTime.Now;
+            commentRepository.UpdateComment(comment);
+            return PartialView("CommentModalPartial", new CommentViewModel());
+        }
+
+        [HttpPost]
+        [Route("Movie/Comment/{id}")]
+        public IActionResult Comment(int? id)
+        {
+            
+            if(id == null)
+            {
+                return NotFound();
+            }else
+            {
+                commentRepository.DeleteComment((int)id);
+                if(MovieComment.MovieOrSerie == "Movie")
+                {
+                    MovieComment.UserToComment = GenerateCommentsForMovie(MovieComment.original_title);
+                }
+                else
+                {
+                    MovieComment.UserToComment = GenerateCommentsForMovie(MovieComment.original_name);
+                }
+
+            }
+
+
+            return Json(new { success = true, order = MovieComment });
+        }
+
         /// <summary>
         /// Nakijken gegevens film en serie
         /// </summary>
@@ -218,6 +291,7 @@ namespace Eindproject.Controllers
         
         }
             
+        
         public IActionResult Delete([FromRoute] int Id)
         {
             var ms = _context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmInLijstId == Id);
@@ -325,6 +399,29 @@ namespace Eindproject.Controllers
         }
 
 
+        public IActionResult Genre(string name)
+        {
+            //Zoek met de naam string de  Id op om een API call te maken voor de Genres op te halen
+            bool genreInDic = allGenresMovies.TryGetValue(name, out int id);
+            
+            if(genreInDic == true)
+            {
+                var url = $"https://api.themoviedb.org/3/discover/movie?api_key={api_key}&with_genres={id}";
+                var moviesWithGenre =   GetAllMoviesAndSeries(url).Result;
+                ViewData["genre"] = name;
+                ViewData["Base"] = base_url;
+                ViewData["File"] = file_size;
+                return View(moviesWithGenre);
+
+            }
+            else
+            {
+                return NotFound();
+            }
+        
+        }
+
+
 
 
         
@@ -392,6 +489,7 @@ namespace Eindproject.Controllers
 
         private void GetLatestMoviesTrailers()
         {
+
             // Display the 3 latest trailers of movies in the cinema
             // Find the movies that has just been released
             // Search on the date from now
@@ -410,8 +508,12 @@ namespace Eindproject.Controllers
             // Haal alle userId's uit de lijst 
             foreach(var comment in CommentsOrderedByDate)
             {
-                var commentUserTuple = MapUserWithComment(ListAllUsers(), comment);
-                UserToComment.Add(commentUserTuple.Item1, commentUserTuple.Item2);
+                if(comment.Comment_Message != null)
+                {
+                    var commentUserTuple = MapUserWithComment(ListAllUsers(), comment);
+                    UserToComment.Add(commentUserTuple.Item1, commentUserTuple.Item2);
+                }
+                
             }
 
             return UserToComment;
@@ -421,8 +523,13 @@ namespace Eindproject.Controllers
         }
 
 
-        private void LoadAllGenres()
+        private void LoadAllGenres(string genre)
         {
+            // Weten wat de lijst van namen zijn van genres
+            // Request maken naar de api van de naam
+            // Op de homebalk alle genres displayen in een forloop
+            // Als er op geklikt is verstuur dat naar API om Dingen up te loaden
+            // Alle 
 
         }
 
