@@ -32,8 +32,8 @@ namespace Eindproject.Data
 
 
             builder.Entity<Status>().HasData(
-               new Status { StatusId = 1, StatusWatch = false },
-               new Status { StatusId = 2, StatusWatch = true }
+               new Status { StatusId = 1, StatusDescription = "Done" },
+               new Status { StatusId = 2, StatusDescription = "Watching" }
            );
 
 
@@ -45,7 +45,7 @@ namespace Eindproject.Data
                 OriginalTitle = "Star Trek: The Next Generation Collection",
                 FilmUrl = "/jYtNUfMbU6DBbmd4LUS19u4hF4p.jpg",
                 Score = 8,
-                SerieOfFilmInLijstId = "1",
+                SerieOfFilmInLijstId = 1,
                 StatusId = 1,
 
 

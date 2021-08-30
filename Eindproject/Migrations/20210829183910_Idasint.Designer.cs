@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eindproject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210829121902_FIRST")]
-    partial class FIRST
+    [Migration("20210829183910_Idasint")]
+    partial class Idasint
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -149,8 +149,8 @@ namespace Eindproject.Migrations
                         new
                         {
                             LijstId = 1,
-                            BewerktOp = new DateTime(2021, 8, 29, 14, 19, 1, 748, DateTimeKind.Local).AddTicks(8187),
-                            ToegeVoegdOp = new DateTime(2021, 8, 29, 14, 19, 1, 739, DateTimeKind.Local).AddTicks(4565)
+                            BewerktOp = new DateTime(2021, 8, 29, 20, 39, 9, 854, DateTimeKind.Local).AddTicks(2778),
+                            ToegeVoegdOp = new DateTime(2021, 8, 29, 20, 39, 9, 851, DateTimeKind.Local).AddTicks(9717)
                         });
                 });
 
@@ -198,8 +198,10 @@ namespace Eindproject.Migrations
 
             modelBuilder.Entity("Eindproject.Domain.SerieOfFilmInLijst", b =>
                 {
-                    b.Property<string>("SerieOfFilmInLijstId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("SerieOfFilmInLijstId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ApiId")
                         .HasColumnType("int");
@@ -239,7 +241,7 @@ namespace Eindproject.Migrations
                     b.HasData(
                         new
                         {
-                            SerieOfFilmInLijstId = "1",
+                            SerieOfFilmInLijstId = 1,
                             ApiId = 200,
                             FilmUrl = "/jYtNUfMbU6DBbmd4LUS19u4hF4p.jpg",
                             LijstId = 1,
