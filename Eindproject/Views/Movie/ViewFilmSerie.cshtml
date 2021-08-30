@@ -28,6 +28,9 @@
     }
 
 }
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
 
 <div class="container">
@@ -37,11 +40,11 @@
                 <div class="card-header">
                     @if (Model.MovieOrSerie == "Movie")
                     {
-                    <h4><strong>@Model.title</strong></h4>
+                        <h4><strong>@Model.title</strong></h4>
                     }
                     else
                     {
-                    <h4><strong>@Model.original_name</strong></h4>
+                        <h4><strong>@Model.original_name</strong></h4>
                     }
 
                 </div>
@@ -67,86 +70,175 @@
             {
                 if (Model.MovieOrSerie == "Movie")
                 {
-        <div class="col-sm-8">
-            <section class="mb-3 card">
-
-                <div class="card-body">
-                    @if (serieOfFilmInLijst.Status.StatusWatch == true)
+                    <div class="col-sm-4">
+                        <section class="mb-3 card">
+                            <div class="card-header">
+                                <h5><strong>Watch history</strong></h5>
+                            </div>
+                            <div class="card-body">
+                                @if (serieOfFilmInLijst.StatusId == 1)
                                 {
-                    <p>Watched <a href="#">toggle watched</a></p>
-                                }
-                                else if (false)
-                                {
-                    <p>Not watched <a href="#">toggle watched</a></p>
+                                    <div class="card-body text-right">
+                                        <p>Watched</p>
+                                    </div>
                                 }
                                 else
                                 {
-                    <p class="btn btn-primary">Cant ever be null</p>
+                                    <div class="card-body text-right">
+                                        <p>Not watched</p>
+                                    </div>
                                 }
+
+                            </div>
+                        </section>
+                    </div>
+                        <div class="col-sm-4">
+                            <section class="mb-3 card">
+                        <div class="card-header">
+                            <h5><strong>Edit</strong></h5>
+                        </div>
+                        <div class="card-body ">
+
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#@serieOfFilmInLijst.SerieOfFilmInLijstId">Edit</button>
+
+                            <div id="@serieOfFilmInLijst.SerieOfFilmInLijstId" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        @using (Html.BeginForm("EditM", "Movie", FormMethod.Get))
+                                        {
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="AmountWatched">Watched :</label>
+                                                    <input type="checkbox" class="form-control" id="gekeken" name="gekeken" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="AmountWatched">Score out of 10 :</label>
+                                                    <input type="text" class="form-control" id="score" name="score" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="hidden" class="form-control" id="id" name="id" value="@serieOfFilmInLijst.SerieOfFilmInLijstId" placeholder="">
+                                                </div>
+                                                <input type="submit" value="Edit" />
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-            </section>
-        </div>
                 }
                 else
                 {
-        <div class="col-sm-4">
-            <section class="mb-3 card">
-                <div class="card-header">
-                    <h5><strong>Watch history</strong></h5>
-                </div>
-
-                <div class="card-body text-right">
-                    <p>@serieOfFilmInLijst.aantalGekekenAfleveringen / @serieOfFilmInLijst.aantalAfleveringen</p>
-                </div>
-            </section>
-        </div>
-        <div class="col-sm-4">
-            <section class="mb-3 card">
-                <div class="card-header">
-                    <h5><strong>Status</strong></h5>
-                </div>
-                <div class="card-body text-right">
-                    @if (serieOfFilmInLijst.Status.StatusWatch == true)
+                    <div class="col-sm-4">
+                        <section class="mb-3 card">
+                            <div class="card-header">
+                                <h5><strong>Watch history</strong></h5>
+                            </div>
+                            @if (serieOfFilmInLijst.aantalAfleveringen == 1)
+                            {
+                                if (serieOfFilmInLijst.aantalGekekenAfleveringen >= 1)
                                 {
-                    <p>Completed <a href="#">toggle watched</a></p>
-                                }
-                                else if (false)
-                                {
-                    <p>Not Completed <a href="#">toggle watched</a></p>
+                                    <div class="card-body text-right">
+                                        <p>Watched</p>
+                                    </div>
                                 }
                                 else
                                 {
-                    <p class="btn btn-primary">Cant ever be null</p>
+                                    <div class="card-body text-right">
+                                        <p>Not watched</p>
+                                    </div>
                                 }
-                </div>
-            </section>
-        </div>
+
+                            }
+                            else
+                            {
+                                <div class="card-body text-right">
+                                    <p>@serieOfFilmInLijst.aantalGekekenAfleveringen / @serieOfFilmInLijst.aantalAfleveringen</p>
+                                </div>
+                            }
+                        </section>
+                    </div>
+                    <div class="col-sm-4">
+                        <section class="mb-3 card">
+                            <div class="card-header">
+                                <h5><strong>Edit</strong></h5>
+                            </div>
+                            <div class="card-body ">
+
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#@serieOfFilmInLijst.SerieOfFilmInLijstId">Edit</button>
+
+                                <div id="@serieOfFilmInLijst.SerieOfFilmInLijstId" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            @using (Html.BeginForm("Edit", "Movie", FormMethod.Get))
+                                            {
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="AmountWatched">Amount Watched :</label>
+                                                        <input type="text" class="form-control" id="gekeken" name="gekeken" placeholder="">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="AmountWatched">Score out of 10 :</label>
+                                                        <input type="text" class="form-control" id="score" name="score" placeholder="">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="hidden" class="form-control" id="id" name="id" value="@serieOfFilmInLijst.SerieOfFilmInLijstId" placeholder="">
+                                                    </div>
+                                                    <input type="submit" value="Edit" />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
                 }
             }
             else
             {
-        <div class="col-sm-8">
-            <section class="mb-3 card">
-                <div class="card-header">
-                    <h5><strong>Watch history</strong></h5>
+                <div class="col-sm-8">
+                    <section class="mb-3 card">
+                        <div class="card-header">
+                            <h5><strong>Watch history</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            @if (Model.MovieOrSerie == "Movie")
+                            {
+                                <a asp-controller="movie" asp-action="Add" asp-route-apiId="@Model.id" asp-route-originalTitle="@Model.original_title" asp-route-aantalAfl="@Model.number_of_episodes" asp-route-tijdePerAfelevering="@Model.runtime" asp-route-filmUrl="@Model.poster_path" class="btn btn-primary">Add Movie</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="movie" asp-action="Add" asp-route-apiId="@Model.id" asp-route-originalTitle="@Model.original_name" asp-route-aantalAfl="@Model.number_of_episodes" asp-route-tijdePerAfelevering="@Model.runtime" asp-route-filmUrl="@Model.poster_path" class="btn btn-primary">Add Movie</a>
+                            }
+                        </div>
+                    </section>
                 </div>
-                <div class="card-body">
-                    <p class="btn btn-primary">Add to list</p>
-                </div>
-            </section>
-        </div>
             }
         }
         else
         {
-        <div class="col-sm-8">
-            <section class="mb-3 card">
+            <div class="col-sm-8">
+                <section class="mb-3 card">
 
-                <div class="card-body">
-                    <p><a asp-area="Identity" asp-page="/Account/Login">Login</a> or <a asp-area="Identity" asp-page="/Account/Register">Register</a> to access lists</p>
-                </div>
-            </section>
-        </div>
+                    <div class="card-body">
+                        <p><a asp-area="Identity" asp-page="/Account/Login">Login</a> or <a asp-area="Identity" asp-page="/Account/Register">Register</a> to access lists</p>
+                    </div>
+                </section>
+            </div>
         }
         <div class="col-sm-3">
             <section class="mb-3 card">
@@ -154,7 +246,11 @@
                     <h5><strong>Score</strong></h5>
                 </div>
                 <div class="card-body text-right">
-                    <p>@Model.vote_average / 10</p>
+                    <p>Online score: @Model.vote_average / 10</p>
+                    @if (SignInManager.IsSignedIn(User) && serieOfFilmInLijst != null)
+                    {
+                        <p>Personal score: @serieOfFilmInLijst.Score / 10</p>
+                    }
                 </div>
             </section>
         </div>
@@ -170,8 +266,8 @@
                     <div class="col-md-12">
                         @if (Model.UserToComment != null && Model.UserToComment.Count() != 0 && SignInManager.IsSignedIn(User))
                         {
-                        @foreach (var comment in Model.UserToComment)
-                                {
+                            @foreach (var comment in Model.UserToComment)
+                            {
                                 <div class="media">
                                     <a class="pr-3" href="#"><img class="rounded-circle" alt="Bootstrap Media Another Preview" src="https://i.imgur.com/xELPaag.jpg" /></a>
                                     <div class="media-body">
@@ -179,13 +275,13 @@
                                             <div class="col-12 d-flex">
                                                 <h5>@comment.Key.Voornaam @comment.Key.Achternaam</h5>
                                                 @if (comment.Value.Created_Date.Date == DateTime.Now.Date)
-                                                                {
-                                                <span> @comment.Value.Created_Date.ToString("hh:mm") </span>
-                                                                }
-                                                                else
-                                                                {
-                                                <span> @comment.Value.Created_Date </span>
-                                                                }
+                                                {
+                                                    <span> @comment.Value.Created_Date.ToString("hh:mm") </span>
+                                                }
+                                                else
+                                                {
+                                                    <span> @comment.Value.Created_Date </span>
+                                                }
                                             </div>
                                         </div> @comment.Value.Comment_Message
                                     </div>
@@ -208,7 +304,7 @@
 
 
 
-                                }
+                            }
 
                             <form method="post" asp-controller="Movie" asp-action="ViewFilmSerie">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -224,14 +320,14 @@
                         }
                         else if (SignInManager.IsSignedIn(User))
                         {
-                        <form method="post" asp-controller="Movie" asp-action="ViewFilmSerie">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="bg-light p-2 " data-parent="#myGroup">
-                                <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea asp-for="@Model.message" class="form-control ml-1 shadow-none textarea"></textarea></div>
-                                <span asp-validation-for="message" class="text-danger"></span>
-                                <div class="mt-2 text-right"><input type="submit" value="Post comment" class="btn btn-primary btn-sm shadow-none" /><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
-                            </div>
-                        </form>
+                            <form method="post" asp-controller="Movie" asp-action="ViewFilmSerie">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="bg-light p-2 " data-parent="#myGroup">
+                                    <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea asp-for="@Model.message" class="form-control ml-1 shadow-none textarea"></textarea></div>
+                                    <span asp-validation-for="message" class="text-danger"></span>
+                                    <div class="mt-2 text-right"><input type="submit" value="Post comment" class="btn btn-primary btn-sm shadow-none" /><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                                </div>
+                            </form>
 
 
 
@@ -241,14 +337,14 @@
                         else
                         {
 
-                        <form method="post">
-                            <h3>There are no comments for this @Model.MovieOrSerie yet</h3>
+                            <form method="post">
+                                <h3>There are no comments for this @Model.MovieOrSerie yet</h3>
 
-                            <div class="p-3 bg-white mt-2 rounded text-center">
-                                <h5>Join the community to comment</h5><a class="btn btn-success btn-sm px-3" type="button" asp-controller="Movie" asp-action="Delete" asp-route-name=@User.Identity.Name>Signup</a>
-                            </div>
+                                <div class="p-3 bg-white mt-2 rounded text-center">
+                                    <h5>Join the community to comment</h5><a class="btn btn-success btn-sm px-3" type="button" asp-controller="Movie" asp-action="Delete" asp-route-name=@User.Identity.Name>Signup</a>
+                                </div>
 
-                        </form>
+                            </form>
 
                         }
 

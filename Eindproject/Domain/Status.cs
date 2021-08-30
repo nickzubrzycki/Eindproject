@@ -8,7 +8,7 @@ namespace Eindproject.Domain
         [Key]
         public int StatusId { get; set; }
 
-        public bool? StatusWatch { get; set; } 
+        public string StatusDescription { get; set; } 
 
 
     }

@@ -147,8 +147,8 @@ namespace Eindproject.Migrations
                         new
                         {
                             LijstId = 1,
-                            BewerktOp = new DateTime(2021, 8, 29, 14, 19, 1, 748, DateTimeKind.Local).AddTicks(8187),
-                            ToegeVoegdOp = new DateTime(2021, 8, 29, 14, 19, 1, 739, DateTimeKind.Local).AddTicks(4565)
+                            BewerktOp = new DateTime(2021, 8, 29, 20, 48, 44, 480, DateTimeKind.Local).AddTicks(2936),
+                            ToegeVoegdOp = new DateTime(2021, 8, 29, 20, 48, 44, 477, DateTimeKind.Local).AddTicks(4499)
                         });
                 });
 
@@ -196,8 +196,10 @@ namespace Eindproject.Migrations
 
             modelBuilder.Entity("Eindproject.Domain.SerieOfFilmInLijst", b =>
                 {
-                    b.Property<string>("SerieOfFilmInLijstId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("SerieOfFilmInLijstId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ApiId")
                         .HasColumnType("int");
@@ -237,7 +239,7 @@ namespace Eindproject.Migrations
                     b.HasData(
                         new
                         {
-                            SerieOfFilmInLijstId = "1",
+                            SerieOfFilmInLijstId = 1,
                             ApiId = 200,
                             FilmUrl = "/jYtNUfMbU6DBbmd4LUS19u4hF4p.jpg",
                             LijstId = 1,
@@ -257,8 +259,8 @@ namespace Eindproject.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool?>("StatusWatch")
-                        .HasColumnType("bit");
+                    b.Property<string>("StatusDescription")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StatusId");
 
@@ -268,12 +270,12 @@ namespace Eindproject.Migrations
                         new
                         {
                             StatusId = 1,
-                            StatusWatch = false
+                            StatusDescription = "Done"
                         },
                         new
                         {
                             StatusId = 2,
-                            StatusWatch = true
+                            StatusDescription = "Watching"
                         });
                 });
 

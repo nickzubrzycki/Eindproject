@@ -1,5 +1,14 @@
-﻿
+﻿@using Microsoft.AspNetCore.Identity
+@using Eindproject.Domain
+@using Eindproject.Data
 
+@inject UserManager<ApplicationUser> userManager
+@inject SignInManager<ApplicationUser> signInManager
+@inject ApplicationDbContext data
+@{ 
+    var id = userManager.GetUserId(User);
+    int lijstid = data.Lijsts.FirstOrDefault(l => l.UserId == id).LijstId;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,19 +39,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="ViewRandomFilmSerie">Suprise me</a>
                         </li>
-                        <li class="nav-item" style="margin:8px 3px 0px 0px; ">
-                            <div class="dropdown show">
-                                <a class="text-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    My Watchlist
-                                </a>
-
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="All">All</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="Finished">Finished</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="Watching">Watching/Plan to watch</a>
-                                </div>
-                            </div>
-                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Watchlist" asp-route-id="@lijstid">All</a>
+                        </li>                        
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

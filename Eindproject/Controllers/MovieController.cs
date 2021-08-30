@@ -72,18 +72,30 @@ namespace Eindproject.Controllers
         /// Voeg een nieuwe Film of Serie toe
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
-        public IActionResult Add([FromRoute] AllMoviesSeriesViewModel ms)
+        public IActionResult Add(int apiId, string originalTitle, int aantalAfl, TimeSpan tijdePerAflevering,string filmUrl )
         {
-            var newMovie = new SerieOfFilmInLijst
+            var id = userManager.GetUserId(User);
+            int lijstId = _context.Lijsts.FirstOrDefault(l => l.UserId == id).LijstId;
+            //var newMovie = new SerieOfFilmInLijst
+            //{
+            //    ApiId = apiId,
+            //    FilmUrl = filmUrl,
+            //    OriginalTitle = originalTitle,
+            //    Score = 0,
+            //    tijdPerAflevering = tijdePerAflevering,
+            //    LijstId = lijstId,
+            //    aantalAfleveringen = aantalAfl
+            //};
+            if (aantalAfl == 0)
             {
-                ApiId = ms.id
-            };
-
-            _context.SerieOfFilms.Add(newMovie);
+                aantalAfl = 1;
+            }
+            _context.SerieOfFilms.Add(new SerieOfFilmInLijst{ApiId = apiId,FilmUrl = filmUrl,OriginalTitle = originalTitle,Score = 0,tijdPerAflevering = tijdePerAflevering,LijstId = lijstId,aantalAfleveringen = aantalAfl , StatusId = 2});
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+            string userid = userManager.GetUserId(User);
+            int lijstid = _context.Lijsts.FirstOrDefault(l => l.UserId == userid).LijstId;
+            return RedirectToAction("Watchlist", new { Id = lijstid });
         }
 
 
@@ -105,7 +117,6 @@ namespace Eindproject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ViewFilmSerie([FromForm] MovieCommentViewModel movieCommentViewModel)
         {
-
                 if(ModelState.IsValid)
                 {
                     Comment comment = new Comment();
@@ -125,18 +136,10 @@ namespace Eindproject.Controllers
                         commentRepository.AddComment(comment);
                         MovieComment.UserToComment = GenerateCommentsForMovie(comment.MovieOrSerie_Title);
                     }
-
-
                 }
-
             //Zorgen dat als ik een view terug geef
-
-            return View(MovieComment);
-
-  
+            return View(MovieComment);  
         }
-
-
         /// <summary>
         /// Nakijken gegevens film en serie
         /// </summary>
@@ -168,8 +171,7 @@ namespace Eindproject.Controllers
                 vm = GetMovieOrSerie(movieUrl).Result;
                 vm.poster_path = base_url + file_size + vm.poster_path;
 
-            }
-          
+            }        
             vm.UserToComment = GenerateCommentsForMovie(name);
             MovieComment = vm;
             return View(vm);
@@ -218,7 +220,7 @@ namespace Eindproject.Controllers
             
         public IActionResult Delete([FromRoute] int Id)
         {
-            var ms = _context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id);
+            var ms = _context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmInLijstId == Id);
 
             var vm = new MovieDeleteViewModel
             {
@@ -230,14 +232,46 @@ namespace Eindproject.Controllers
 
             return View(vm);
         }
-
-        [HttpPost]
+        public IActionResult Edit(int id, int gekeken, int score)
+        {
+            var x = _context.SerieOfFilms.FirstOrDefault(s => s.SerieOfFilmInLijstId == id);
+            x.aantalGekekenAfleveringen = gekeken;
+            x.Score = score;
+            _context.SerieOfFilms.Update(x);
+            _context.SaveChanges();
+            string userid = userManager.GetUserId(User);
+            int lijstid = _context.Lijsts.FirstOrDefault(l => l.UserId == userid).LijstId;
+            return RedirectToAction("Watchlist", new { Id = lijstid });
+        }
+        public IActionResult EditM(int id, string gekeken, int score)
+        {
+            var x = _context.SerieOfFilms.FirstOrDefault(s => s.SerieOfFilmInLijstId == id);
+            if (gekeken == "on")
+            {
+                x.aantalGekekenAfleveringen = 1;
+                x.StatusId = 1;
+            }
+            else
+            {
+                x.StatusId = 2;
+            }
+            if (score != 0)
+            {
+                x.Score = score;
+            }       
+            _context.SerieOfFilms.Update(x);
+            _context.SaveChanges();
+            string userid = userManager.GetUserId(User);
+            int lijstid = _context.Lijsts.FirstOrDefault(l => l.UserId == userid).LijstId;
+            return RedirectToAction("Watchlist", new { Id = lijstid });
+        }
         public IActionResult ConfirmDelete([FromRoute] int Id)
         {
-            _context.SerieOfFilms.Remove(_context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id));
+            _context.SerieOfFilms.Remove(_context.SerieOfFilms.FirstOrDefault(x => x.SerieOfFilmInLijstId == Id));
             _context.SaveChanges();
-
-            return RedirectToAction(nameof(Watchlist));
+            string userid = userManager.GetUserId(User);
+            int lijstid = _context.Lijsts.FirstOrDefault(l => l.UserId == userid).LijstId;
+            return RedirectToAction("Watchlist",new { Id = lijstid });
         }
 
         public IActionResult UnWatchlist(int counter)
@@ -271,16 +305,22 @@ namespace Eindproject.Controllers
             return View(moviesAndSeries);
         }
 
-        public IActionResult Watchlist(int counter)
+        public IActionResult Watchlist([FromRoute]int id)
         { 
 
-            var vm = movieRepository.GetAllMoviesWatch().Select(x => new AllMoviesSeriesViewModel
+            var vm = movieRepository.GetAllInList(id).Select(x => new SerieFilmListView
             {
-                title = x.OriginalTitle,
-                poster_path = base_url + file_size + x.FilmUrl,
-
+                ApiId = x.ApiId,
+                FilmUrl = x.FilmUrl,
+                AantalAfleveringen = x.aantalAfleveringen,
+                AantalGekekenAfleveringen = x.aantalGekekenAfleveringen,
+                OriginalTitle = x.OriginalTitle,
+                Score = x.Score,
+                TijdPerAflevering = x.tijdPerAflevering,
+                Id = x.SerieOfFilmInLijstId
+                
+                
             });
-
             return View(vm);
         }
 

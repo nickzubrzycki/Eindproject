@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eindproject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210829132630_test")]
-    partial class test
+    [Migration("20210829184844_status")]
+    partial class status
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -92,6 +92,37 @@ namespace Eindproject.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Eindproject.Domain.Comment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CommentId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment_Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created_Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MovieOrSerie_Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("CommentId1");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("Eindproject.Domain.Lijst", b =>
                 {
                     b.Property<int>("LijstId")
@@ -118,8 +149,8 @@ namespace Eindproject.Migrations
                         new
                         {
                             LijstId = 1,
-                            BewerktOp = new DateTime(2021, 8, 29, 15, 26, 29, 864, DateTimeKind.Local).AddTicks(3451),
-                            ToegeVoegdOp = new DateTime(2021, 8, 29, 15, 26, 29, 862, DateTimeKind.Local).AddTicks(1268)
+                            BewerktOp = new DateTime(2021, 8, 29, 20, 48, 44, 480, DateTimeKind.Local).AddTicks(2936),
+                            ToegeVoegdOp = new DateTime(2021, 8, 29, 20, 48, 44, 477, DateTimeKind.Local).AddTicks(4499)
                         });
                 });
 
@@ -167,8 +198,10 @@ namespace Eindproject.Migrations
 
             modelBuilder.Entity("Eindproject.Domain.SerieOfFilmInLijst", b =>
                 {
-                    b.Property<string>("SerieOfFilmInLijstId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("SerieOfFilmInLijstId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ApiId")
                         .HasColumnType("int");
@@ -208,7 +241,7 @@ namespace Eindproject.Migrations
                     b.HasData(
                         new
                         {
-                            SerieOfFilmInLijstId = "1",
+                            SerieOfFilmInLijstId = 1,
                             ApiId = 200,
                             FilmUrl = "/jYtNUfMbU6DBbmd4LUS19u4hF4p.jpg",
                             LijstId = 1,
@@ -228,8 +261,8 @@ namespace Eindproject.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool?>("StatusWatch")
-                        .HasColumnType("bit");
+                    b.Property<string>("StatusDescription")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StatusId");
 
@@ -239,12 +272,12 @@ namespace Eindproject.Migrations
                         new
                         {
                             StatusId = 1,
-                            StatusWatch = false
+                            StatusDescription = "Done"
                         },
                         new
                         {
                             StatusId = 2,
-                            StatusWatch = true
+                            StatusDescription = "Watching"
                         });
                 });
 
@@ -404,6 +437,19 @@ namespace Eindproject.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Eindproject.Domain.Comment", b =>
+                {
+                    b.HasOne("Eindproject.Domain.Comment", null)
+                        .WithMany("OtherComments")
+                        .HasForeignKey("CommentId1");
+
+                    b.HasOne("Eindproject.Domain.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Eindproject.Domain.Lijst", b =>
                 {
                     b.HasOne("Eindproject.Domain.ApplicationUser", "User")
@@ -517,6 +563,11 @@ namespace Eindproject.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Eindproject.Domain.Comment", b =>
+                {
+                    b.Navigation("OtherComments");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Eindproject.Migrations
 {
-    public partial class FIRST : Migration
+    public partial class Idasint : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -286,7 +286,8 @@ namespace Eindproject.Migrations
                 name: "SerieOfFilms",
                 columns: table => new
                 {
-                    SerieOfFilmInLijstId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SerieOfFilmInLijstId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ApiId = table.Column<int>(type: "int", nullable: false),
                     LijstId = table.Column<int>(type: "int", nullable: false),
                     Score = table.Column<double>(type: "float", nullable: false),
@@ -317,7 +318,7 @@ namespace Eindproject.Migrations
             migrationBuilder.InsertData(
                 table: "Lijsts",
                 columns: new[] { "LijstId", "BewerktOp", "ToegeVoegdOp", "UserId" },
-                values: new object[] { 1, new DateTime(2021, 8, 29, 14, 19, 1, 748, DateTimeKind.Local).AddTicks(8187), new DateTime(2021, 8, 29, 14, 19, 1, 739, DateTimeKind.Local).AddTicks(4565), null });
+                values: new object[] { 1, new DateTime(2021, 8, 29, 20, 39, 9, 854, DateTimeKind.Local).AddTicks(2778), new DateTime(2021, 8, 29, 20, 39, 9, 851, DateTimeKind.Local).AddTicks(9717), null });
 
             migrationBuilder.InsertData(
                 table: "Statuses",
@@ -332,7 +333,7 @@ namespace Eindproject.Migrations
             migrationBuilder.InsertData(
                 table: "SerieOfFilms",
                 columns: new[] { "SerieOfFilmInLijstId", "ApiId", "FilmUrl", "LijstId", "OriginalTitle", "Score", "StatusId", "aantalAfleveringen", "aantalGekekenAfleveringen", "tijdPerAflevering" },
-                values: new object[] { "1", 200, "/jYtNUfMbU6DBbmd4LUS19u4hF4p.jpg", 1, "Star Trek: The Next Generation Collection", 8.0, 1, 0, 0, new TimeSpan(0, 0, 0, 0, 0) });
+                values: new object[] { 1, 200, "/jYtNUfMbU6DBbmd4LUS19u4hF4p.jpg", 1, "Star Trek: The Next Generation Collection", 8.0, 1, 0, 0, new TimeSpan(0, 0, 0, 0, 0) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
