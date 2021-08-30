@@ -367,6 +367,7 @@
                         console.log("xhr done successfully");
                         var resp = xhr.responseText;
                         var respJson = JSON.parse(resp);
+                        location.reload();
                         resolve(respJson);
                     } else {
                         reject(xhr.status);
@@ -391,7 +392,7 @@
         console.log(CommentId);
         var URL = `https://localhost:5001/movie/Comment/${CommentId}`
         makeAjaxCall(URL, "Post").then(processUserDetailsResponse, errorHandler);
-        location.reload();
+        
     });
        
     
