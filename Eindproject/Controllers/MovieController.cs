@@ -309,8 +309,22 @@ namespace Eindproject.Controllers
         public IActionResult Edit(int id, int gekeken, int score)
         {
             var x = _context.SerieOfFilms.FirstOrDefault(s => s.SerieOfFilmInLijstId == id);
-            x.aantalGekekenAfleveringen = gekeken;
-            x.Score = score;
+            if (gekeken != 0)
+            {
+                x.aantalGekekenAfleveringen = gekeken;
+                if (gekeken >= x.aantalAfleveringen)
+                {
+                    x.StatusId = 1;
+                }
+                else
+                {
+                    x.StatusId = 2;
+                }
+            }
+            if (score != 0)
+            {
+                x.Score = score;
+            }
             _context.SerieOfFilms.Update(x);
             _context.SaveChanges();
             string userid = userManager.GetUserId(User);

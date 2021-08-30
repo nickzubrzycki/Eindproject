@@ -50,37 +50,72 @@ else
                             Edit
                         </button>
                         <a asp-controller="Movie" asp-action="ConfirmDelete" asp-route-id="@ms.Id" class="btn btn-danger">Delete</a>
-
-                        <div id="@ms.Id" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Edit</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    @using (Html.BeginForm("Edit", "Movie", FormMethod.Get))
-                                    {
-                                        <div class="modal-body">
-
-                                            <div class="form-group">
-                                                <label for="AmountWatched">Amount Watched :</label>
-                                                <input type="text" class="form-control" id="gekeken" name="gekeken" placeholder="">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="AmountWatched">Score out of 10 :</label>
-                                                <input type="text" class="form-control" id="score" name="score" placeholder="">
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="hidden" class="form-control" id="id" name="id" value="@ms.Id" placeholder="">
-                                            </div>
-                                            <input type="submit" value="Edit" />                                           
+                        @if (ms.AantalAfleveringen == 1)
+                        {
+                            <div id="@ms.Id" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
                                         </div>
-                                    }                                       
+                                        @using (Html.BeginForm("EditM", "Movie", FormMethod.Get))
+                                        {
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="AmountWatched">Watched :</label>
+                                                    <input type="checkbox" class="form-control" id="gekeken" name="gekeken" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="AmountWatched">Score out of 10 :</label>
+                                                    <input type="text" class="form-control" id="score" name="score" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="hidden" class="form-control" id="id" name="id" value="@ms.Id" placeholder="">
+                                                </div>
+                                                <input type="submit" value="Edit" />
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+                        else
+                        {
+                            <div id="@ms.Id" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        @using (Html.BeginForm("Edit", "Movie", FormMethod.Get))
+                                        {
+                                            <div class="modal-body">
+
+                                                <div class="form-group">
+                                                    <label for="AmountWatched">Amount Watched :</label>
+                                                    <input type="text" class="form-control" id="gekeken" name="gekeken" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="AmountWatched">Score out of 10 :</label>
+                                                    <input type="text" class="form-control" id="score" name="score" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="hidden" class="form-control" id="id" name="id" value="@ms.Id" placeholder="">
+                                                </div>
+                                                <input type="submit" value="Edit" />
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        
                     </div>
                     @*edit modal komt hier nog boven bij*@
                 </div>
