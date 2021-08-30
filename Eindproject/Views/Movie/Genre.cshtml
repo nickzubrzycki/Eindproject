@@ -18,10 +18,11 @@
 else
 {
 
-    <div class="card-deck">
-        @foreach (var ms in Model)
+<div class="card-deck">
+    @foreach (var ms in Model)
+    {
+        @if (ms.MovieOrSerie != null)
         {
-
             <div class="col-sm-6 col-lg-4 mb-3">
                 <div class="card mb-3">
                     <img src="@baseUrl@fileSize@ms.poster_path"
@@ -72,9 +73,12 @@ else
                 </div>
             </div>
 
-
         }
-    </div>
+
+
+
+    }
+</div>
 
    
 
