@@ -42,7 +42,23 @@ namespace Eindproject.Controllers
               {"Horror", 27 },
               { "Fantasy", 14},
               { "Romance", 10749 },
-              { "Science Fiction", 878}
+              { "Science Fiction", 878},
+              { "Documentary", 99 },
+              { "Crime", 80 },
+              { "Family", 10751}
+            };
+
+        private readonly Dictionary<string, int> allGenresSeries =
+            new Dictionary<string, int>()
+            { {"Action & Adventure", 10759},
+              {"Animation", 16},
+              { "Comedy", 35},
+              { "Crime", 80 },
+              { "Family", 10751},
+              {"Documentary", 99 },
+              {"Drama", 18 },
+              {"Mystery", 9648 },
+              {"Kids", 10762 }
             };
 
 
@@ -360,16 +376,17 @@ namespace Eindproject.Controllers
         public IActionResult Genre(string name)
         {
             //Zoek met de naam string de  Id op om een API call te maken voor de Genres op te halen
-            bool genreInDic = allGenresMovies.TryGetValue(name, out int id);
+            bool genreInDicMovie = allGenresMovies.TryGetValue(name, out int idMovie);
             
-            if(genreInDic == true)
+            
+            if(genreInDicMovie == true)
             {
-                var url = $"https://api.themoviedb.org/3/discover/movie?api_key={api_key}&with_genres={id}";
-                var moviesWithGenre =   GetAllMoviesAndSeries(url).Result;
+                var urlMovie = $"https://api.themoviedb.org/3/discover/movie?api_key={api_key}&with_genres={idMovie}";
+                var moviesForGenre =   GetAllMoviesAndSeries(urlMovie).Result;
                 ViewData["genre"] = name;
                 ViewData["Base"] = base_url;
                 ViewData["File"] = file_size;
-                return View(moviesWithGenre);
+                return View(moviesForGenre);
 
             }
             else
@@ -380,9 +397,25 @@ namespace Eindproject.Controllers
         }
 
 
+        public IActionResult GenreSerie(string name)
+        {
+            bool genreInDicSerie = allGenresSeries.TryGetValue(name, out int idSerie);
+            if(genreInDicSerie == true)
+            {
+                var url = $"https://api.themoviedb.org/3/discover/tv?api_key={api_key}&language=en-US&sort_by=popularity.desc&page=1&timezone=America%2FNew_York&with_genres={idSerie}&include_null_first_air_dates=false&with_watch_monetization_types=flatrate";
+                var SerieForGenre = GetAllMoviesAndSeries(url).Result;
+                ViewData["genre"] = name;
+                ViewData["Base"] = base_url;
+                ViewData["File"] = file_size;
+                return View(SerieForGenre);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
 
-        
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Search(  string search,  int counter)
         {
@@ -481,16 +514,7 @@ namespace Eindproject.Controllers
         }
 
 
-        private void LoadAllGenres(string genre)
-        {
-            // Weten wat de lijst van namen zijn van genres
-            // Request maken naar de api van de naam
-            // Op de homebalk alle genres displayen in een forloop
-            // Als er op geklikt is verstuur dat naar API om Dingen up te loaden
-            // Alle 
-
-        }
-
+      
         /// <summary>
         /// Geeft een lijst terug van een aantal arrays waar alle movieviewmodels inkomen in elke array verdeeld per 5. 
         /// Tenzij er een rest is 
@@ -683,12 +707,16 @@ namespace Eindproject.Controllers
                     if (moviesSeriesViewModel.release_date == null)
                     {
                         moviesSeriesViewModel.MovieOrSerie = "Serie";
-                        int Id = GetSpecificSerieMovie("series", moviesSeriesViewModel.original_name);
-                        List<int> serie = GetMovieOrSerieInfo(Id,
-                            moviesSeriesViewModel.MovieOrSerie);
-                        moviesSeriesViewModel.number_of_episodes = serie[0];
-                        moviesSeriesViewModel.season_number = serie[1];
-                        moviesSeriesViewModel.number_of_seasons = serie[2];
+                        if(moviesSeriesViewModel.original_name != null)
+                        {
+                            int Id = GetSpecificSerieMovie("series", moviesSeriesViewModel.original_name);
+                            List<int> serie = GetMovieOrSerieInfo(Id,
+                                moviesSeriesViewModel.MovieOrSerie);
+                            moviesSeriesViewModel.number_of_episodes = serie[0];
+                            moviesSeriesViewModel.season_number = serie[1];
+                            moviesSeriesViewModel.number_of_seasons = serie[2];
+                        }
+                       
                     }
                     else
                     {
@@ -712,6 +740,10 @@ namespace Eindproject.Controllers
                 allMoviesSeriesViews.Add(moviesSeriesViewModel);
 
                 // Handle failure
+            }finally
+             {
+                moviesSeriesViewModel = new AllMoviesSeriesViewModel();
+                allMoviesSeriesViews.Add(moviesSeriesViewModel);
             }
             return allMoviesSeriesViews;
 

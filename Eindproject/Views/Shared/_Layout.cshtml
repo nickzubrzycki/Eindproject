@@ -1,5 +1,8 @@
 ﻿@{ 
-    string[] allGenres = new string[] { "Action", "Adventure", "Animation", "Horror", "Fantasy", "Romance", "Science Fiction" };
+    string[] allGenres = new string[] { "Action", "Adventure", "Animation", "Horror", "Fantasy", "Romance", "Science Fiction"
+    , "Documentary", "Crime", "Family"};
+
+    string[] GenresSeries = new string[] { "Action & Adventure", "Animation", "Comedy", "Mystery", "Kids"};
 }
 
 <!DOCTYPE html>
@@ -45,13 +48,29 @@
                         <li class="nav-item" style="margin:8px 3px 0px 0px; ">
                             <div class="dropdown show">
                                 <a class="text-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Genres
+                                    Genres For Movies
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                     @foreach (var item in allGenres)
                                     {
                                         <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="Genre" asp-route-name="@item">@item</a>
+                                    }
+
+
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item" style="margin:8px 3px 0px 0px; ">
+                            <div class="dropdown show">
+                                <a class="text-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Genres For Series
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    @foreach (var item in GenresSeries)
+                                    {
+                                        <a class="dropdown-item" asp-area="" asp-controller="Movie" asp-action="GenreSerie" asp-route-name="@item">@item</a>
                                     }
 
 
