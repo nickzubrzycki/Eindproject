@@ -94,12 +94,18 @@ namespace Eindproject.Data
         /// Ophalen van films en series die al gekeken of niet voor de watchlist van de user
         /// </summary>
         /// <returns></returns>
+        /// 
+        public IEnumerable<SerieOfFilmInLijst> GetAllInList(int lijstid)
+        {
+            return applicationDbContext.SerieOfFilms.Where(x => x.LijstId == lijstid).ToList();
+        }
+
         public IEnumerable<SerieOfFilmInLijst> GetAllMoviesWatch()
         {
             // Kijk voor de when de movie is 
             //Search for the data that has been watched
             return applicationDbContext.SerieOfFilms.Include(x => x.Status)
-            .Where(x => x.Status.StatusWatch == true).ToList();
+            .Where(x => x.Status.StatusDescription == "Done").ToList();
         }
 
 
@@ -110,7 +116,7 @@ namespace Eindproject.Data
             // Join doen op statusid voor vinden van items
 
             return applicationDbContext.SerieOfFilms.Include(x => x.Status)
-            .Where(x => x.Status.StatusWatch == false).ToList();
+            .Where(x => x.Status.StatusDescription == "Watching").ToList();
 
             
         }
@@ -136,7 +142,7 @@ namespace Eindproject.Data
         IEnumerable<SerieOfFilmInLijst> GetAllMoviesNotWatched();
 
         IEnumerable<SerieOfFilmInLijst> GetAllMoviesWatch();
-
+        IEnumerable<SerieOfFilmInLijst> GetAllInList(int id);
         void Save();
     }
 }
