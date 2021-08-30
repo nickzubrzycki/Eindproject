@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 
-$(document).ready(function () {
+$(function () {
     var PlaceHolderElement = $('#EditComment');
     $('button[data-toggle="ajax-modal"]').click(function () {
         var url = $(this).data('url');
@@ -13,5 +13,19 @@ $(document).ready(function () {
 
         })
 
+    })
+
+    PlaceHolderElement.on('click', '[data-save="modal"]', function (event) {
+        var form = $(this).parents('.modal').find('form');
+        var actionUrl = form.attr('action');
+        var sendData = form.serialize();
+        console.log(sendData);
+        $.post(actionUrl, sendData).done(function (data) {
+            PlaceHolderElement.find('.modal').modal('hide');
+            window.location.reload();
+        }).fail(function (response) {
+            alert('Error: ' + response.status + response.responseJSON);
+        });
+        
     });
 });

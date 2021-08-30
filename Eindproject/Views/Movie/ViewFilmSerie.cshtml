@@ -172,39 +172,42 @@
                         {
                         @foreach (var comment in Model.UserToComment)
                                 {
-                                <div class="media">
-                                    <a class="pr-3" href="#"><img class="rounded-circle" alt="Bootstrap Media Another Preview" src="https://i.imgur.com/xELPaag.jpg" /></a>
-                                    <div class="media-body">
-                                        <div class="row">
-                                            <div class="col-12 d-flex">
-                                                <h5>@comment.Key.Voornaam @comment.Key.Achternaam</h5>
-                                                @if (comment.Value.Created_Date.Date == DateTime.Now.Date)
-                                                                {
-                                                <span> @comment.Value.Created_Date.ToString("hh:mm") </span>
-                                                                }
-                                                                else
-                                                                {
-                                                <span> @comment.Value.Created_Date </span>
-                                                                }
-                                            </div>
-                                        </div> @comment.Value.Comment_Message
+                        <div class="media">
+                            <a class="pr-3" href="#"><img class="rounded-circle" alt="Bootstrap Media Another Preview" src="https://i.imgur.com/xELPaag.jpg" /></a>
+                            <div class="media-body">
+                                <div class="row">
+                                    <div class="col-12 d-flex">
+                                        <h5>@comment.Key.Voornaam @comment.Key.Achternaam</h5>
+                                        @if (comment.Value.Created_Date.Date == DateTime.Now.Date)
+                                        {
+                                            <span> @comment.Value.Created_Date.ToString("hh:mm") </span>
+                                        }
+                                        else
+                                        {
+                                            <span> @comment.Value.Created_Date </span>
+                                        }
                                     </div>
-                                    <div class="d-flex justify-content-end align-items-center comment-buttons mt-2 text-right"><span class="mr-3 delete" data-toggle="modal" data-target="#exampleModalLong">Delete</span><button class="btn btn-success btn-sm border-0 px-3" type="button" data-toggle="ajax-modal" id="EditCommment" data-target="#EditComment" data-url="@Url.Action("Edit", new { comment})">Edit</button></div>
-                                    <div class="bg-white p-2">
-                                        <div class="d-flex flex-row fs-12">
-                                            <div class="like p-2 cursor"><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span></div>
-                                            <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-1" href="#collapse-1"><i class="fa fa-commenting-o"></i><span class="ml-1">Comment</span></div>
-                                            <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-2" href="#collapse-2"><i class="fa fa-share"></i><span class="ml-1">Share</span></div>
-                                        </div>
-                                    </div>
-                                    <div id="collapse-1" class="bg-light p-2 collapse" data-parent="#myGroup">
-                                        <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div>
-                                        <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
-                                    </div>
-                                    <div id="collapse-2" class="bg-light p-2 collapse" data-parent="#myGroup">
-                                        <div class="d-flex flex-row align-items-start"><i class="fa fa-facebook border p-3 rounded mr-1"></i><i class="fa fa-twitter border p-3 rounded mr-1"></i><i class="fa fa-linkedin border p-3 rounded mr-1"></i><i class="fa fa-instagram border p-3 rounded mr-1"></i><i class="fa fa-dribbble border p-3 rounded mr-1"></i> <i class="fa fa-pinterest-p border p-3 rounded mr-1"></i> </div>
-                                    </div>
+                                </div> @comment.Value.Comment_Message
+                            </div>
+
+                            <div id="EditComment"></div>
+                            <input id="CommentId" type="hidden" asp-for="@comment.Value.CommentId" />
+                            <div class="d-flex justify-content-end align-items-center comment-buttons mt-2 text-right"><button id="DeleteComment" class="btn-secondary mr-3 delete">Delete</button><button class="btn btn-success btn-sm border-0 px-3" type="button" data-toggle="ajax-modal" data-target="#EditComment" data-url="@Url.Action("Edit", new { CommentId = comment.Value.CommentId})">Edit</button></div>
+                            <div class="bg-white p-2">
+                                <div class="d-flex flex-row fs-12">
+                                    <div class="like p-2 cursor"><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span></div>
+                                    <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-1" href="#collapse-1"><i class="fa fa-commenting-o"></i><span class="ml-1">Comment</span></div>
+                                    <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-2" href="#collapse-2"><i class="fa fa-share"></i><span class="ml-1">Share</span></div>
                                 </div>
+                            </div>
+                            <div id="collapse-1" class="bg-light p-2 collapse" data-parent="#myGroup">
+                                <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div>
+                                <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                            </div>
+                            <div id="collapse-2" class="bg-light p-2 collapse" data-parent="#myGroup">
+                                <div class="d-flex flex-row align-items-start"><i class="fa fa-facebook border p-3 rounded mr-1"></i><i class="fa fa-twitter border p-3 rounded mr-1"></i><i class="fa fa-linkedin border p-3 rounded mr-1"></i><i class="fa fa-instagram border p-3 rounded mr-1"></i><i class="fa fa-dribbble border p-3 rounded mr-1"></i> <i class="fa fa-pinterest-p border p-3 rounded mr-1"></i> </div>
+                            </div>
+                        </div>
 
 
 
@@ -353,10 +356,51 @@
     }
 </style>
 <script>
-    $('#myModal').on('shown.bs.modal', function () {
-        $('#myInput').trigger('focus')
+    function makeAjaxCall(url, methodType) {
+        var promiseObj = new Promise(function (resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open(methodType, url, true);
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log("xhr done successfully");
+                        var resp = xhr.responseText;
+                        var respJson = JSON.parse(resp);
+                        resolve(respJson);
+                    } else {
+                        reject(xhr.status);
+                        console.log("xhr failed");
+                    }
+                } else {
+                    console.log("xhr processing going on");
+                }
+            }
+            console.log("request sent succesfully");
+        });
+        return promiseObj;
+    }
+    document.getElementById("DeleteComment").addEventListener("click", function () {
+        
+
+        var url = window.location.href.split('/');
+        var baseUrl = url[0] + '//' + url[2];
+        // git hub url to get btford details
+        console.log(baseUrl);
+        var CommentId = document.getElementById("CommentId").value;
+        console.log(CommentId);
+        var URL = `https://localhost:5001/movie/Comment/${CommentId}`
+        makeAjaxCall(URL, "Post").then(processUserDetailsResponse, errorHandler);
+        location.reload();
     });
+       
+    
+    function processUserDetailsResponse(userData) {
+        console.log("render user details", userData);
+    }
 
-
+    function errorHandler(statusCode) {
+        console.log("failed with status" + statusCode);
+    }
    
 </script>

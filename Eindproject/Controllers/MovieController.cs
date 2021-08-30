@@ -136,11 +136,63 @@ namespace Eindproject.Controllers
 
   
         }
-
-        public IActionResult Edit()
+        /// <summary>
+        /// Edit comment from User with a modal
+        /// </summary>
+        /// <param name="CommentId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Edit(int CommentId)
         {
-            CommentViewModel comment = new CommentViewModel();
-            return PartialView("CommentModalPartial", comment);
+            var comment = commentRepository.GetComment(CommentId);
+            CommentViewModel commentView = new CommentViewModel();
+            commentView.Comment_Id = CommentId;
+            commentView.Comment_Message = comment.Comment_Message;
+            commentView.Created_Date = comment.Created_Date;
+            return PartialView("CommentModalPartial", commentView);
+        }
+
+        /// <summary>
+        /// Post new Comment to database
+        /// </summary>
+        /// <param name="Comment_Id"></param>
+        /// <param name="Comment_Message"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int Comment_Id, string Comment_Message)
+        {
+            Comment comment = commentRepository.GetComment(Comment_Id);
+            comment.Comment_Message = Comment_Message;
+            comment.Created_Date = DateTime.Now;
+            commentRepository.UpdateComment(comment);
+            return PartialView("CommentModalPartial", new CommentViewModel());
+        }
+
+        [HttpPost]
+        [Route("Movie/Comment/{id}")]
+        public IActionResult Comment(int? id)
+        {
+            
+            if(id == null)
+            {
+                return NotFound();
+            }else
+            {
+                commentRepository.DeleteComment((int)id);
+                if(MovieComment.MovieOrSerie == "Movie")
+                {
+                    MovieComment.UserToComment = GenerateCommentsForMovie(MovieComment.original_title);
+                }
+                else
+                {
+                    MovieComment.UserToComment = GenerateCommentsForMovie(MovieComment.original_name);
+                }
+
+            }
+
+
+            return Json(new { success = true, order = MovieComment });
         }
 
         /// <summary>
@@ -222,6 +274,7 @@ namespace Eindproject.Controllers
         
         }
             
+        
         public IActionResult Delete([FromRoute] int Id)
         {
             var ms = _context.SerieOfFilms.FirstOrDefault(x => x.ApiId == Id);
@@ -376,8 +429,12 @@ namespace Eindproject.Controllers
             // Haal alle userId's uit de lijst 
             foreach(var comment in CommentsOrderedByDate)
             {
-                var commentUserTuple = MapUserWithComment(ListAllUsers(), comment);
-                UserToComment.Add(commentUserTuple.Item1, commentUserTuple.Item2);
+                if(comment.Comment_Message != null)
+                {
+                    var commentUserTuple = MapUserWithComment(ListAllUsers(), comment);
+                    UserToComment.Add(commentUserTuple.Item1, commentUserTuple.Item2);
+                }
+                
             }
 
             return UserToComment;
